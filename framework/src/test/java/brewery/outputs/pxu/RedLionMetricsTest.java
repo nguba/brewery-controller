@@ -1,6 +1,5 @@
 package brewery.outputs.pxu;
 
-import brewery.outputs.RedLionProfileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

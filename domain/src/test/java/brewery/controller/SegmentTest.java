@@ -1,6 +1,5 @@
 package brewery.controller;
 
-import org.assertj.core.api.ThrowableAssertAlternative;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -25,7 +24,7 @@ class SegmentTest {
     @Test
     void durationCannotBeLongerThan900Minutes() {
         assertThatIllegalArgumentException().isThrownBy(() ->
-                Segment.with(Temperature.inCelsius(55.0), Duration.ofMinutes(901)))
+                        Segment.with(Temperature.inCelsius(55.0), Duration.ofMinutes(901)))
                 .withMessage("Duration cannot exceed 900 minutes");
     }
 }
