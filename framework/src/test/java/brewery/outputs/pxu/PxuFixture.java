@@ -48,7 +48,7 @@ public abstract class PxuFixture<T> implements RedLionNetworkListener<T> {
 
 
     @AfterAll
-    static void tearDown() throws Exception {
+    static void tearDown()  {
         pxu.stop();
     }
 
