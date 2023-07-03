@@ -38,7 +38,7 @@ public class RedLionPxuNetwork {
         pxuManager.queue(new QueryProfileRequest(unitId, master, listener));
     }
 
-    public void stop() throws Exception {
+    public void stop() {
         pxuManager.stop();
         master.disconnect();
         LOGGER.info("Stopped {}", this.getClass().getSimpleName());
@@ -98,7 +98,7 @@ public class RedLionPxuNetwork {
             }
         }
 
-    public static interface ModbusRequest {
+    public interface ModbusRequest {
 
         void execute();
     }
