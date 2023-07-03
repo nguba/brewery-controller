@@ -5,27 +5,32 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-class RedLionProfileTest extends PxuFixture<RedLionProfile> {
+class PxuProfileTest extends PxuFixture<PxuProfile> {
+
+    @Test
+    void hasUnitId() {
+        assertThat(results.unitId()).isEqualTo(UNIT_ID);
+    }
 
     @Test
     void readSegmentZero() {
-        RedLionProfile.Segment actual = results.segment(0);
+        PxuProfile.Segment actual = results.segment(0);
 
-        assertThat(actual).isEqualTo(new RedLionProfile.Segment(11, 12));
+        assertThat(actual).isEqualTo(new PxuProfile.Segment(11, 12));
     }
 
     @Test
     void readSegmentOne() {
-        RedLionProfile.Segment actual = results.segment(1);
+        PxuProfile.Segment actual = results.segment(1);
 
-        assertThat(actual).isEqualTo(new RedLionProfile.Segment(21, 22));
+        assertThat(actual).isEqualTo(new PxuProfile.Segment(21, 22));
     }
 
     @Test
     void readSegmentTwo() {
-        RedLionProfile.Segment actual = results.segment(2);
+        PxuProfile.Segment actual = results.segment(2);
 
-        assertThat(actual).isEqualTo(new RedLionProfile.Segment(31, 32));
+        assertThat(actual).isEqualTo(new PxuProfile.Segment(31, 32));
     }
 
     @Test
@@ -35,7 +40,7 @@ class RedLionProfileTest extends PxuFixture<RedLionProfile> {
     }
 
     @Override
-    protected Runnable networkCommand(RedLionNetworkListener<RedLionProfile> listener) {
+    protected Runnable networkCommand(PxuReadListener<PxuProfile> listener) {
         return () -> pxu.queryProfile(UNIT_ID, listener);
     }
 }

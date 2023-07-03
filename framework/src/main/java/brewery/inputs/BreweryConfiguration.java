@@ -1,6 +1,6 @@
 package brewery.inputs;
 
-import brewery.outputs.pxu.RedLionPxuNetwork;
+import brewery.outputs.pxu.PxuNetwork;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +11,8 @@ import java.time.Duration;
 public class BreweryConfiguration {
 
     @Bean
-    RedLionPxuNetwork redLionNetwork(SerialParameters parameters) throws Exception {
-        return new RedLionPxuNetwork(parameters, Duration.ofSeconds(1)).start();
+    PxuNetwork redLionNetwork(SerialParameters parameters) throws Exception {
+        return new PxuNetwork(parameters, Duration.ofSeconds(1)).start();
     }
 
     @Bean

@@ -13,18 +13,18 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // TODO consider moving this into a Junit5 extension
-public abstract class PxuFixture<T> implements RedLionNetworkListener<T> {
+public abstract class PxuFixture<T> implements PxuReadListener<T> {
 
     protected static final int UNIT_ID = 6;
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuFixture.class);
-    protected static RedLionPxuNetwork pxu;
+    protected static PxuNetwork pxu;
 
     private final CountDownLatch latch = new CountDownLatch(1);
 
     protected T results;
 
-    protected abstract Runnable networkCommand(RedLionNetworkListener<T> listener);
+    protected abstract Runnable networkCommand(PxuReadListener<T> listener);
 
     @BeforeAll
     static void init() throws Exception {
@@ -35,7 +35,7 @@ public abstract class PxuFixture<T> implements RedLionNetworkListener<T> {
         parameters.setParity("None");
         parameters.setDatabits(8);
 
-        pxu = new RedLionPxuNetwork(parameters, Duration.ofMillis(100)).start();
+        pxu = new PxuNetwork(parameters, Duration.ofMillis(100)).start();
     }
 
 

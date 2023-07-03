@@ -1,6 +1,6 @@
 package brewery.outputs.pxu;
 
-public interface RedLionNetworkListener<T> {
+public interface PxuReadListener<T> {
 
     void onRead(T value);
 }

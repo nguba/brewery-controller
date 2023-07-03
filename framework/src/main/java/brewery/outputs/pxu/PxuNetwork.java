@@ -11,30 +11,30 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.*;
 
-public class RedLionPxuNetwork {
+public class PxuNetwork {
     private final ModbusSerialMaster master;
 
     private final PxuManager pxuManager;
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RedLionPxuNetwork.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuNetwork.class);
 
-    public RedLionPxuNetwork(SerialParameters parameters, Duration pollRate) {
+    public PxuNetwork(SerialParameters parameters, Duration pollRate) {
         master = new ModbusSerialMaster(parameters);
         pxuManager = new PxuManager(pollRate.toMillis());
     }
 
-    public RedLionPxuNetwork start() throws Exception {
+    public PxuNetwork start() throws Exception {
         master.connect();
         pxuManager.start();
         LOGGER.info("Started {}", this.getClass().getSimpleName());
         return this;
     }
 
-    public void queryMetrics(int unitId, RedLionNetworkListener<RedLionMetrics> listener)  {
+    public void queryMetrics(int unitId, PxuReadListener<PxuMetrics> listener)  {
         pxuManager.queue(new QueryMetricsRequest(unitId, master, listener));
     }
 
-    public void queryProfile(int unitId, RedLionNetworkListener<RedLionProfile> listener) {
+    public void queryProfile(int unitId, PxuReadListener<PxuProfile> listener) {
         pxuManager.queue(new QueryProfileRequest(unitId, master, listener));
     }
 
@@ -85,12 +85,12 @@ public class RedLionPxuNetwork {
     }
 
     private record QueryMetricsRequest(int unitId, AbstractModbusMaster master,
-                                       RedLionNetworkListener<RedLionMetrics> listener) implements ModbusRequest {
+                                       PxuReadListener<PxuMetrics> listener) implements ModbusRequest {
         @Override
             public void execute() {
                 try {
                     Register[] regs = master.readMultipleRegisters(unitId, 0, 30);
-                    RedLionMetrics metrics = new RedLionMetrics(unitId, regs);
+                    PxuMetrics metrics = new PxuMetrics(unitId, regs);
                     listener.onRead(metrics);
                 } catch (ModbusException e) {
                     System.err.println(e.getMessage());
@@ -104,12 +104,12 @@ public class RedLionPxuNetwork {
     }
 
     private record QueryProfileRequest(int unitId, ModbusSerialMaster master,
-                                       RedLionNetworkListener<RedLionProfile> listener) implements ModbusRequest {
+                                       PxuReadListener<PxuProfile> listener) implements ModbusRequest {
         @Override
             public void execute() {
                 try {
                     Register[] regs = master.readMultipleRegisters(unitId, 1100, 30);
-                    listener.onRead(new RedLionProfile(unitId, regs));
+                    listener.onRead(new PxuProfile(unitId, regs));
                 } catch (ModbusException e) {
                     System.err.println(e.getMessage());
                 }

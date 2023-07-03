@@ -7,12 +7,17 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RedLionMetricsTest extends PxuFixture<RedLionMetrics> {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RedLionMetricsTest.class);
+class PxuMetricsTest extends PxuFixture<PxuMetrics> {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuMetricsTest.class);
 
     @Override
-    protected Runnable networkCommand(RedLionNetworkListener<RedLionMetrics> listener) {
+    protected Runnable networkCommand(PxuReadListener<PxuMetrics> listener) {
         return () -> pxu.queryMetrics(UNIT_ID, listener);
+    }
+
+    @Test
+    void hasUnitId() {
+        assertThat(results.unitId()).isEqualTo(UNIT_ID);
     }
 
     @Test

@@ -4,9 +4,9 @@ import com.ghgande.j2mod.modbus.procimg.Register;
 
 import java.util.Arrays;
 
-public class RedLionProfile {
+public class PxuProfile {
 
-    public RedLionProfile(int unitId, Register[] regs) {
+    public PxuProfile(int unitId, Register[] regs) {
         this.unitId = unitId;
         this.regs = regs;
     }
@@ -20,7 +20,7 @@ public class RedLionProfile {
 
     @Override
     public String toString() {
-        return "RedLionProfile{" +
+        return "PxuProfile{" +
                 "unitId=" + unitId +
                 ", regs=" + Arrays.toString(regs) +
                 '}';
@@ -35,10 +35,10 @@ public class RedLionProfile {
     public record Segment(int setpoint, int duration) {
     }
 
-    public void printValues() {
-        int index = 0;
-        for (int i = 0; i < 30; i += 2) {
-            System.out.println("Seg[" + ++index + "] sP=" + regs[i].getValue() + " t=" + regs[i + 1].getValue());
-        }
-    }
+//    public void printValues() {
+//        int index = 0;
+//        for (int i = 0; i < 30; i += 2) {
+//            System.out.println("Seg[" + ++index + "] sP=" + regs[i].getValue() + " t=" + regs[i + 1].getValue());
+//        }
+//    }
 }

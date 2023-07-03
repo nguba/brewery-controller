@@ -5,7 +5,7 @@ import com.ghgande.j2mod.modbus.procimg.Register;
 import java.time.Duration;
 import java.util.Arrays;
 
-public class RedLionMetrics {
+public class PxuMetrics {
 
     private final int unitId;
 
@@ -14,12 +14,12 @@ public class RedLionMetrics {
     }
 
     public enum Status {
-        STOP, RUN, END, PAUSE, ADVANCE;
+        STOP, RUN, END, PAUSE, ADVANCE
     }
 
     private final Register[] registers;
 
-    public RedLionMetrics(int unitId, Register[] registers) {
+    public PxuMetrics(int unitId, Register[] registers) {
         this.unitId = unitId;
         this.registers = registers;
     }
@@ -106,7 +106,7 @@ public class RedLionMetrics {
 
     @Override
     public String toString() {
-        return "RedLionMetrics{" +
+        return "PxuMetrics{" +
                 "unitId=" + unitId +
                 ", registers=" + Arrays.toString(registers) +
                 '}';
