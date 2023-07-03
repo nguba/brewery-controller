@@ -1,7 +1,5 @@
 package brewery.outputs.pxu;
 
-import brewery.outputs.ModbusRequest;
-import brewery.outputs.RedLionProfileReader;
 import com.ghgande.j2mod.modbus.ModbusException;
 import com.ghgande.j2mod.modbus.facade.AbstractModbusMaster;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
@@ -36,9 +34,8 @@ public class RedLionPxuNetwork {
         pxuManager.queue(new QueryMetricsRequest(unitId, master, listener));
     }
 
-    public RedLionProfileReader makeProfileReader(int unitId) throws ModbusException {
-        Register[] regs = master.readMultipleRegisters(unitId, 1100, 30);
-        return new RedLionProfileReader(unitId, regs);
+    public void queryProfile(int unitId, RedLionNetworkListener<RedLionProfile> listener) {
+        pxuManager.queue(new QueryProfileRequest(unitId, master, listener));
     }
 
     public void stop() throws Exception {
@@ -87,27 +84,35 @@ public class RedLionPxuNetwork {
         }
     }
 
-    public static class QueryMetricsRequest implements ModbusRequest {
-
-        private final int unitId;
-        private final AbstractModbusMaster master;
-        private final RedLionNetworkListener<RedLionMetrics> listener;
-
-        public QueryMetricsRequest(int unitId, AbstractModbusMaster master, RedLionNetworkListener<RedLionMetrics> listener) {
-            this.unitId = unitId;
-            this.master = master;
-            this.listener = listener;
-        }
-
+    private record QueryMetricsRequest(int unitId, AbstractModbusMaster master,
+                                       RedLionNetworkListener<RedLionMetrics> listener) implements ModbusRequest {
         @Override
-        public void execute() {
-            try {
-                Register[] regs = master.readMultipleRegisters(unitId, 0, 30);
-                RedLionMetrics metrics = new RedLionMetrics(unitId, regs);
-                listener.onRead(metrics);
-            } catch (ModbusException e) {
-               System.err.println(e.getMessage());
+            public void execute() {
+                try {
+                    Register[] regs = master.readMultipleRegisters(unitId, 0, 30);
+                    RedLionMetrics metrics = new RedLionMetrics(unitId, regs);
+                    listener.onRead(metrics);
+                } catch (ModbusException e) {
+                    System.err.println(e.getMessage());
+                }
             }
         }
+
+    public static interface ModbusRequest {
+
+        void execute();
     }
+
+    private record QueryProfileRequest(int unitId, ModbusSerialMaster master,
+                                       RedLionNetworkListener<RedLionProfile> listener) implements ModbusRequest {
+        @Override
+            public void execute() {
+                try {
+                    Register[] regs = master.readMultipleRegisters(unitId, 1100, 30);
+                    listener.onRead(new RedLionProfile(unitId, regs));
+                } catch (ModbusException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
 }
