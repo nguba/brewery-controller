@@ -4,6 +4,11 @@ import com.ghgande.j2mod.modbus.procimg.Register;
 
 import java.util.Arrays;
 
+/**
+ * The PXU profile is a series of 30 registers, each register is 16 bits.
+ * Each tuple represents the target setpoint and the duration.
+ * This allows for automated temperature profiles for mash, boil, and fermentation.
+ */
 public class PxuProfile {
 
     public PxuProfile(int unitId, Register[] regs) {

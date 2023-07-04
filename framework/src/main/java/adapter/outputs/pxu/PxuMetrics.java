@@ -5,6 +5,11 @@ import com.ghgande.j2mod.modbus.procimg.Register;
 import java.time.Duration;
 import java.util.Arrays;
 
+/**
+ * The PXU metrics are a series of typical values representing various states of the PXU.
+ * This allows for monitoring of the current state of the PXU.
+ * For a description of each state, see the utility methods returning the value, or the PXU documentation at page 48.
+ */
 public class PxuMetrics {
 
     private final int unitId;
