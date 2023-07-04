@@ -16,6 +16,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.ghgande:j2mod:3.1.1")
+    implementation("com.influxdb:influxdb-client-java:6.9.0")
 
     testImplementation("org.testcontainers:testcontainers:${testContainersVersion}")
     testImplementation("org.testcontainers:influxdb:${testContainersVersion}")
