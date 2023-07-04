@@ -10,7 +10,7 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith({PxuNetworkExtension.class})
+@ExtendWith(PxuNetworkExtension.class)
 class PxuMetricsTest extends PxuFixture<PxuMetrics> {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuMetricsTest.class);
     private final PxuNetwork pxu;
