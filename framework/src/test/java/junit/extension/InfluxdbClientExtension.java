@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.testcontainers.containers.InfluxDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+// Close the DB connection after the test
 public class InfluxdbClientExtension implements ParameterResolver {
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {

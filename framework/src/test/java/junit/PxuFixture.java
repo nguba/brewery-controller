@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 // TODO consider moving this into a Junit5 extension
 public abstract class PxuFixture<T> implements PxuReadListener<T> {
 
@@ -37,6 +35,9 @@ public abstract class PxuFixture<T> implements PxuReadListener<T> {
     }
 
     protected void awaitResult() throws InterruptedException {
-        assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+        // timeout when device doesn't respond
+        if (!latch.await(5, TimeUnit.SECONDS)) {
+            throw new RuntimeException("Device did not respond in time");
+        }
     }
 }

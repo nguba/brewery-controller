@@ -17,7 +17,7 @@ class PxuProfileTest extends PxuFixture<PxuProfile> {
         this.pxu = pxu;
     }
 
-    @ExtendWith({PxuNetworkExtension.class})    @Test
+    @Test
     void hasUnitId() {
         assertThat(results.unitId()).isEqualTo(UNIT_ID);
     }

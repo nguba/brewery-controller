@@ -30,7 +30,7 @@ public class PxuNetworkExtension implements ParameterResolver, BeforeAllCallback
         try {
             return pxuNetwork;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("DEVICE NOT AVAILABLE: " + e);
         }
     }
 

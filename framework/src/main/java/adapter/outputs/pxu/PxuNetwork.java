@@ -93,7 +93,7 @@ public class PxuNetwork {
                     PxuMetrics metrics = new PxuMetrics(unitId, regs);
                     listener.onRead(metrics);
                 } catch (ModbusException e) {
-                    System.err.println(e.getMessage());
+                    System.err.println("DEVICE NOT AVAILABLE" + e.getMessage());
                 }
             }
         }
