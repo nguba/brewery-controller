@@ -8,20 +8,20 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.Duration;
 
-@SpringBootApplication(scanBasePackages = "brewery")
+@SpringBootApplication
 public class BreweryServer {
     public static void main(String[] args) {
         SpringApplication.run(BreweryServer.class, args);
     }
 
     @Bean
-    PxuNetwork redLionNetwork(SerialParameters parameters) throws Exception {
+    PxuNetwork pxuNetwork(SerialParameters parameters) throws Exception {
         return new PxuNetwork(parameters, Duration.ofSeconds(1)).start();
     }
 
     @Bean
     SerialParameters serialParameters() {
-        SerialParameters parameters = new SerialParameters();
+        final SerialParameters parameters = new SerialParameters();
         parameters.setPortName("COM3");
         parameters.setEncoding("rtu");
         parameters.setBaudRate(9600);
