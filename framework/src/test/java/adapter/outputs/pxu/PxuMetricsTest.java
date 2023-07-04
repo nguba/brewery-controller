@@ -1,14 +1,21 @@
 package adapter.outputs.pxu;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith({PxuNetworkExtension.class})
 class PxuMetricsTest extends PxuFixture<PxuMetrics> {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuMetricsTest.class);
+    private final PxuNetwork pxu;
+
+    PxuMetricsTest(PxuNetwork pxu) {
+        this.pxu = pxu;
+    }
 
     @Override
     protected Runnable networkCommand(PxuReadListener<PxuMetrics> listener) {

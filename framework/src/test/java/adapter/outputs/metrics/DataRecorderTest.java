@@ -1,40 +1,25 @@
 package adapter.outputs.metrics;
 
 import com.influxdb.client.InfluxDBClient;
-import com.influxdb.client.InfluxDBClientFactory;
-import com.influxdb.client.InfluxDBClientOptions;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.InfluxDBContainer;
-import org.testcontainers.utility.DockerImageName;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Discovery test to explore how the testcontainer framework is used to talk to an innodb image.
+ */
+@ExtendWith({InfluxdbClientExtension.class})
 class DataRecorderTest {
 
-    /**
-     * Discovery test to explore how the testcontainer framework is used to talk to an innodb image.
-     */
+    private final InfluxDBClient client;
+
+    DataRecorderTest(InfluxDBClient client) {
+        this.client = client;
+    }
+
     @Test
     void testContainerStartup() {
-        try(InfluxDBContainer<?> container = new InfluxDBContainer<>(
-                DockerImageName.parse("influxdb:2.7.1")
-        );) {
-            container.start();
-
-            assertThat(container.isRunning()).isTrue();
-
-            InfluxDBClientOptions options = InfluxDBClientOptions.builder()
-                    .url(container.getUrl())
-                    //.authenticateToken(container.getToken())
-                    .org(container.getOrganization())
-                    .bucket(container.getBucket())
-                    .build();
-
-            try (InfluxDBClient client = InfluxDBClientFactory.create(options)) {
-
-                assertThat(client.ping()).isTrue();
-
-            }
-        }
+        assertThat(client.ping()).isTrue();
     }
 }

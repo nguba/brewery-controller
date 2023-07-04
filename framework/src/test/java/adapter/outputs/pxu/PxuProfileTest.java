@@ -1,13 +1,21 @@
 package adapter.outputs.pxu;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+@ExtendWith({PxuNetworkExtension.class})
 class PxuProfileTest extends PxuFixture<PxuProfile> {
 
-    @Test
+    private final PxuNetwork pxu;
+
+    PxuProfileTest(PxuNetwork pxu) {
+        this.pxu = pxu;
+    }
+
+    @ExtendWith({PxuNetworkExtension.class})    @Test
     void hasUnitId() {
         assertThat(results.unitId()).isEqualTo(UNIT_ID);
     }
