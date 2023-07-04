@@ -9,10 +9,16 @@ plugins {
 
 apply(plugin = "io.spring.dependency-management")
 
+val testContainersVersion = "1.18.3"
+
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(project(":application"))
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.ghgande:j2mod:3.1.1")
+
+    testImplementation("org.testcontainers:testcontainers:${testContainersVersion}")
+    testImplementation("org.testcontainers:influxdb:${testContainersVersion}")
 }
 
 application {
