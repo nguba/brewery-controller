@@ -14,32 +14,32 @@ import java.util.concurrent.*;
 public class PxuNetwork {
     private final ModbusSerialMaster master;
 
-    private final PxuManager pxuManager;
+    private final RequestQueue requestQueue;
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuNetwork.class);
 
     public PxuNetwork(SerialParameters parameters, Duration pollRate) {
         master = new ModbusSerialMaster(parameters);
-        pxuManager = new PxuManager(pollRate.toMillis());
+        requestQueue = new RequestQueue(pollRate.toMillis());
     }
 
     public PxuNetwork start() throws Exception {
         master.connect();
-        pxuManager.start();
+        requestQueue.start();
         LOGGER.info("Started {}", this.getClass().getSimpleName());
         return this;
     }
 
     public void queryMetrics(int unitId, PxuReadListener<PxuMetrics> listener)  {
-        pxuManager.queue(new QueryMetricsRequest(unitId, master, listener));
+        requestQueue.queue(new QueryMetricsRequest(unitId, master, listener));
     }
 
     public void queryProfile(int unitId, PxuReadListener<PxuProfile> listener) {
-        pxuManager.queue(new QueryProfileRequest(unitId, master, listener));
+        requestQueue.queue(new QueryProfileRequest(unitId, master, listener));
     }
 
     public void stop() {
-        pxuManager.stop();
+        requestQueue.stop();
         master.disconnect();
         LOGGER.info("Stopped {}", this.getClass().getSimpleName());
     }
@@ -49,14 +49,14 @@ public class PxuNetwork {
      * or obtain readings.  These cannot occur in parallel since modbus is a serial interface.  This class
      * ensures that tasks are executed serially and after each has completed.
      */
-    private static class PxuManager implements Runnable {
+    private static class RequestQueue implements Runnable {
         private final BlockingQueue<ModbusRequest> queue = new LinkedBlockingQueue<>();
         private final ScheduledExecutorService consumer = Executors.newSingleThreadScheduledExecutor();
         private Optional<ScheduledFuture<?>> scheduledFuture = Optional.empty();
 
         private final long delay;
 
-        private PxuManager(long delay) {
+        private RequestQueue(long delay) {
             this.delay = delay;
         }
 
