@@ -1,5 +1,6 @@
-package adapter.outputs.pxu;
+package junit;
 
+import adapter.outputs.pxu.PxuReadListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 

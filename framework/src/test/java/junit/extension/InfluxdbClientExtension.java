@@ -1,4 +1,4 @@
-package adapter.outputs.metrics;
+package junit.extension;
 
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;

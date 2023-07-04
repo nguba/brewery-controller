@@ -1,6 +1,7 @@
 package adapter.outputs.metrics;
 
 import com.influxdb.client.InfluxDBClient;
+import junit.extension.InfluxdbClientExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

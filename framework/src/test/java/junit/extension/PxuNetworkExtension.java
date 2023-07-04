@@ -1,5 +1,6 @@
-package adapter.outputs.pxu;
+package junit.extension;
 
+import adapter.outputs.pxu.PxuNetwork;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import org.junit.jupiter.api.extension.*;
 

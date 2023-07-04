@@ -1,5 +1,7 @@
 package adapter.outputs.pxu;
 
+import junit.PxuFixture;
+import junit.extension.PxuNetworkExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
