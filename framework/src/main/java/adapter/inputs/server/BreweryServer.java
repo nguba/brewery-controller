@@ -1,14 +1,18 @@
-package brewery.inputs;
+package adapter.inputs.server;
 
-import brewery.outputs.pxu.PxuNetwork;
+import adapter.outputs.pxu.PxuNetwork;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
-@Configuration
-public class BreweryConfiguration {
+@SpringBootApplication(scanBasePackages = "brewery")
+public class BreweryServer {
+    public static void main(String[] args) {
+        SpringApplication.run(BreweryServer.class, args);
+    }
 
     @Bean
     PxuNetwork redLionNetwork(SerialParameters parameters) throws Exception {

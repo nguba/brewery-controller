@@ -1,4 +1,4 @@
-package brewery.outputs.pxu;
+package adapter.outputs.pxu;
 
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import org.junit.jupiter.api.AfterAll;

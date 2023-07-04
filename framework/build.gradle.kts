@@ -17,5 +17,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("brewery.inputs.BreweryServer")
+    mainClass.set("adapter.inputs.server.BreweryServer")
 }

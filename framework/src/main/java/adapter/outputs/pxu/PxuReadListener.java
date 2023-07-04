@@ -1,4 +1,4 @@
-package brewery.outputs.pxu;
+package adapter.outputs.pxu;
 
 public interface PxuReadListener<T> {
 
