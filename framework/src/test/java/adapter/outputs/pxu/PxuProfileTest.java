@@ -1,15 +1,21 @@
 package adapter.outputs.pxu;
 
-import junit.PxuFixture;
-import junit.extension.PxuNetworkExtension;
+import adapter.outputs.pxu.event.ProfileFetched;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import junit.AsyncTestUtils;
+import junit.PxuTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-@ExtendWith({PxuNetworkExtension.class})
-class PxuProfileTest extends PxuFixture<PxuProfile> {
+@PxuTest
+class PxuProfileTest {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuProfileTest.class);
 
     private final PxuNetwork pxu;
 
@@ -17,9 +23,25 @@ class PxuProfileTest extends PxuFixture<PxuProfile> {
         this.pxu = pxu;
     }
 
-    @Test
-    void hasUnitId() {
-        assertThat(results.unitId()).isEqualTo(UNIT_ID);
+    private PxuProfile results;
+
+    private final AsyncTestUtils asyncTestUtils = new AsyncTestUtils();
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private EventBus eventBus;
+
+    @BeforeEach
+    void setUp() throws InterruptedException {
+        eventBus.register(this);
+        asyncTestUtils.executeAndWait(() -> pxu.queryProfile(PxuTestConstants.UNIT_ID), 30);
+    }
+
+    @Subscribe
+    public void profileAvailable(ProfileFetched event) {
+        LOGGER.info("{}", event);
+        results = event.value();
+        asyncTestUtils.notifySuccess();
     }
 
     @Test
@@ -47,10 +69,5 @@ class PxuProfileTest extends PxuFixture<PxuProfile> {
     void readBeyondMaxSegment() {
         assertThatIllegalArgumentException().isThrownBy(() -> results.segment(15))
                 .withMessage("A segment index must be between 0 and 14.");
-    }
-
-    @Override
-    protected Runnable networkCommand(PxuReadListener<PxuProfile> listener) {
-        return () -> pxu.queryProfile(UNIT_ID, listener);
     }
 }

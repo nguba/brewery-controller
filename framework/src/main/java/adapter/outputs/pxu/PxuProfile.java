@@ -11,22 +11,15 @@ import java.util.Arrays;
  */
 public class PxuProfile {
 
-    public PxuProfile(int unitId, Register[] regs) {
-        this.unitId = unitId;
+    public PxuProfile(Register[] regs) {
         this.regs = regs;
     }
 
-    private final int unitId;
     private final Register[] regs;
-
-    public int unitId() {
-        return unitId;
-    }
 
     @Override
     public String toString() {
         return "PxuProfile{" +
-                "unitId=" + unitId +
                 ", regs=" + Arrays.toString(regs) +
                 '}';
     }

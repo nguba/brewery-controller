@@ -1,24 +1,12 @@
 package junit.extension;
 
 import adapter.outputs.pxu.PxuNetwork;
-import com.ghgande.j2mod.modbus.util.SerialParameters;
 import org.junit.jupiter.api.extension.*;
-
-import java.time.Duration;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 public class PxuNetworkExtension implements ParameterResolver, BeforeAllCallback, AfterAllCallback {
-    private final PxuNetwork pxuNetwork;
-
-    public PxuNetworkExtension() {
-        final SerialParameters parameters = new SerialParameters();
-        parameters.setPortName("COM3");
-        parameters.setEncoding("rtu");
-        parameters.setBaudRate(9600);
-        parameters.setParity("None");
-        parameters.setDatabits(8);
-
-        this.pxuNetwork = new PxuNetwork(parameters, Duration.ofMillis(100));
-    }
+    private PxuNetwork pxuNetwork;
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -27,11 +15,7 @@ public class PxuNetworkExtension implements ParameterResolver, BeforeAllCallback
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        try {
-            return pxuNetwork;
-        } catch (Exception e) {
-            throw new RuntimeException("DEVICE NOT AVAILABLE: " + e);
-        }
+        return pxuNetwork;
     }
 
     @Override
@@ -41,6 +25,8 @@ public class PxuNetworkExtension implements ParameterResolver, BeforeAllCallback
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
+        ApplicationContext applicationContext = SpringExtension.getApplicationContext(context);
+        pxuNetwork = applicationContext.getBean(PxuNetwork.class);
         pxuNetwork.start();
     }
 }

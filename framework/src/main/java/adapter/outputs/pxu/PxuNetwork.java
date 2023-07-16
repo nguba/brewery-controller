@@ -1,10 +1,11 @@
 package adapter.outputs.pxu;
 
-import com.ghgande.j2mod.modbus.ModbusException;
+import adapter.outputs.pxu.event.MetricsFetched;
+import adapter.outputs.pxu.event.ProfileFetched;
+import adapter.outputs.pxu.event.PxuRequestFailed;
 import com.ghgande.j2mod.modbus.facade.AbstractModbusMaster;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.Register;
-import com.ghgande.j2mod.modbus.util.SerialParameters;
 import org.slf4j.Logger;
 
 import java.time.Duration;
@@ -18,24 +19,24 @@ public class PxuNetwork {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuNetwork.class);
 
-    public PxuNetwork(SerialParameters parameters, Duration pollRate) {
-        master = new ModbusSerialMaster(parameters);
-        requestQueue = new RequestQueue(pollRate.toMillis());
+    public PxuNetwork(ModbusSerialMaster master, Duration pollRate, EventPublisher eventPublisher) {
+        this.master = master;
+        LOGGER.info("Detected commPorts: {}", master.getConnection().getCommPorts());
+        requestQueue = new RequestQueue(pollRate.toMillis(), eventPublisher);
     }
 
-    public PxuNetwork start() throws Exception {
+    public void start() throws Exception {
         master.connect();
         requestQueue.start();
-        LOGGER.info("Started {}", this.getClass().getSimpleName());
-        return this;
+        LOGGER.info("Started {} on {} {}", this.getClass().getSimpleName(), master.getConnection().getDescriptivePortName(), master.getConnection().getPortName());
     }
 
-    public void queryMetrics(int unitId, PxuReadListener<PxuMetrics> listener)  {
-        requestQueue.queue(new QueryMetricsRequest(unitId, master, listener));
+    public void queryMetrics(int unitId) {
+        requestQueue.queue(new QueryMetricsRequest(unitId, master));
     }
 
-    public void queryProfile(int unitId, PxuReadListener<PxuProfile> listener) {
-        requestQueue.queue(new QueryProfileRequest(unitId, master, listener));
+    public void queryProfile(int unitId) {
+        requestQueue.queue(new QueryProfileRequest(unitId, master));
     }
 
     public void stop() {
@@ -53,11 +54,13 @@ public class PxuNetwork {
         private final BlockingQueue<ModbusRequest> queue = new LinkedBlockingQueue<>();
         private final ScheduledExecutorService consumer = Executors.newSingleThreadScheduledExecutor();
         private Optional<ScheduledFuture<?>> scheduledFuture = Optional.empty();
-
         private final long delay;
+        private final EventPublisher eventPublisher;
+        private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RequestQueue.class);
 
-        private RequestQueue(long delay) {
+        private RequestQueue(long delay, EventPublisher eventPublisher) {
             this.delay = delay;
+            this.eventPublisher = eventPublisher;
         }
 
         public void start() {
@@ -69,7 +72,12 @@ public class PxuNetwork {
         public void run() {
             try {
                 final ModbusRequest request = queue.take();
-                request.execute();
+                try {
+                    request.execute(eventPublisher);
+                } catch (Exception e) {
+                    LOGGER.error("Error executing {}: {}", request.getClass().getSimpleName(), e.getMessage());
+                    eventPublisher.publish(PxuRequestFailed.of(request.unitId(), e));
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -84,35 +92,25 @@ public class PxuNetwork {
         }
     }
 
-    private record QueryMetricsRequest(int unitId, AbstractModbusMaster master,
-                                       PxuReadListener<PxuMetrics> listener) implements ModbusRequest {
+    private record QueryMetricsRequest(int unitId, AbstractModbusMaster master) implements ModbusRequest {
         @Override
-            public void execute() {
-                try {
-                    Register[] regs = master.readMultipleRegisters(unitId, 0, 30);
-                    PxuMetrics metrics = new PxuMetrics(unitId, regs);
-                    listener.onRead(metrics);
-                } catch (ModbusException e) {
-                    System.err.println("DEVICE NOT AVAILABLE" + e.getMessage());
-                }
-            }
+        public void execute(EventPublisher eventPublisher) throws Exception {
+            final Register[] regs = master.readMultipleRegisters(unitId, 0, 30);
+            eventPublisher.publish(MetricsFetched.of(unitId, new PxuMetrics(regs)));
         }
-
-    public interface ModbusRequest {
-
-        void execute();
     }
 
-    private record QueryProfileRequest(int unitId, ModbusSerialMaster master,
-                                       PxuReadListener<PxuProfile> listener) implements ModbusRequest {
+    public interface ModbusRequest {
+        void execute(EventPublisher eventPublisher) throws Exception;
+
+        int unitId();
+    }
+
+    private record QueryProfileRequest(int unitId, ModbusSerialMaster master) implements ModbusRequest {
         @Override
-            public void execute() {
-                try {
-                    Register[] regs = master.readMultipleRegisters(unitId, 1100, 30);
-                    listener.onRead(new PxuProfile(unitId, regs));
-                } catch (ModbusException e) {
-                    System.err.println(e.getMessage());
-                }
-            }
+        public void execute(EventPublisher eventPublisher) throws Exception {
+            final Register[] regs = master.readMultipleRegisters(unitId, 1100, 30);
+            eventPublisher.publish(ProfileFetched.of(unitId, new PxuProfile(regs)));
         }
+    }
 }

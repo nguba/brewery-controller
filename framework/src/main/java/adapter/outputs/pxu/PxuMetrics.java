@@ -6,17 +6,18 @@ import java.time.Duration;
 import java.util.Arrays;
 
 /**
- * The PXU metrics are a series of typical values representing various states of the PXU.
- * This allows for monitoring of the current state of the PXU.
- * For a description of each state, see the utility methods returning the value, or the PXU documentation at page 48.
+ * <p>
+ * This class allows for conveniently reading the registers of the RedLion PXU PID controller
+ * to obtain the most frequently used metrics.
+ * </p>
+ * <p>
+ * For a description of each state, see the utility methods returning the value, or the
+ * PXU documentation at page 48.
+ * </p>
+ *
+ * @see "framework/doc/PXU Manual.pdf"
  */
 public class PxuMetrics {
-
-    private final int unitId;
-
-    public int unitId() {
-        return unitId;
-    }
 
     public enum Status {
         STOP, RUN, END, PAUSE, ADVANCE
@@ -24,8 +25,7 @@ public class PxuMetrics {
 
     private final Register[] registers;
 
-    public PxuMetrics(int unitId, Register[] registers) {
-        this.unitId = unitId;
+    public PxuMetrics(Register[] registers) {
         this.registers = registers;
     }
 
@@ -60,7 +60,7 @@ public class PxuMetrics {
     }
 
     public double outputOne() {
-       return registers[8].getValue() / 10.0;
+        return registers[8].getValue() / 10.0;
     }
 
     public double outputTwo() {
@@ -112,7 +112,6 @@ public class PxuMetrics {
     @Override
     public String toString() {
         return "PxuMetrics{" +
-                "unitId=" + unitId +
                 ", registers=" + Arrays.toString(registers) +
                 '}';
     }

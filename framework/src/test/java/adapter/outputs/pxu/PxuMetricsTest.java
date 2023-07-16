@@ -1,32 +1,48 @@
 package adapter.outputs.pxu;
 
-import junit.PxuFixture;
-import junit.extension.PxuNetworkExtension;
+import adapter.outputs.pxu.event.MetricsFetched;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import junit.AsyncTestUtils;
+import junit.PxuTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(PxuNetworkExtension.class)
-class PxuMetricsTest extends PxuFixture<PxuMetrics> {
+@PxuTest
+class PxuMetricsTest {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuMetricsTest.class);
+
     private final PxuNetwork pxu;
+
+    private PxuMetrics results;
+
+    private final AsyncTestUtils asyncTestUtils = new AsyncTestUtils();
 
     PxuMetricsTest(PxuNetwork pxu) {
         this.pxu = pxu;
     }
 
-    @Override
-    protected Runnable networkCommand(PxuReadListener<PxuMetrics> listener) {
-        return () -> pxu.queryMetrics(UNIT_ID, listener);
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private EventBus eventBus;
+
+    @BeforeEach
+    void setUp() throws InterruptedException {
+        eventBus.register(this);
+        asyncTestUtils.executeAndWait(() -> pxu.queryMetrics(PxuTestConstants.UNIT_ID), 30);
     }
 
-    @Test
-    void hasUnitId() {
-        assertThat(results.unitId()).isEqualTo(UNIT_ID);
+    @Subscribe
+    public void metricsAvailable(MetricsFetched event) {
+        LOGGER.info("{}", event);
+        results = event.value();
+        asyncTestUtils.notifySuccess();
     }
 
     @Test
