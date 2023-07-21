@@ -38,16 +38,17 @@ class DataRecorderTest {
     @Test
     void sampleWrite(InfluxDBContainer<?> container) {
 
-        Temperature temperature = new Temperature();
+        final Temperature temperature = new Temperature();
         temperature.unitId = "6";
         temperature.value = 55D;
         temperature.time = Instant.now();
 
         client.getWriteApiBlocking().writeMeasurement(container.getBucket(), container.getOrganization(), WritePrecision.NS, temperature);
 
-        String flux = "from(bucket:\"test-bucket\") |> range(start: 0) |> filter(fn: (r) => r._measurement == \"temperature\")";
+        String flux = "from(bucket:\"" + container.getBucket() + "\") |> range(start: 0) |> filter(fn: (r) => r._measurement == \"temperature\")";
 
         QueryApi queryApi = client.getQueryApi();
+
 
         List<Temperature> query = queryApi.query(flux, Temperature.class);
         assertThat(query).contains(temperature);
