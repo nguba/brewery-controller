@@ -8,7 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Discovery test to explore how the testcontainer framework is used to talk to an innodb image.
+ * Discovery test to explore how the <a href="https://java.testcontainers.org/">Testcontainers</a> framework is used
+ * for testing the InfluxDB client.
  */
 @ExtendWith({InfluxdbClientExtension.class})
 class DataRecorderTest {

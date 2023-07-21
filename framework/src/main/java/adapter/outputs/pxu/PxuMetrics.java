@@ -4,6 +4,7 @@ import com.ghgande.j2mod.modbus.procimg.Register;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.StringJoiner;
 
 /**
  * <p>
@@ -111,8 +112,8 @@ public class PxuMetrics {
 
     @Override
     public String toString() {
-        return "PxuMetrics{" +
-                ", registers=" + Arrays.toString(registers) +
-                '}';
+        return new StringJoiner(", ", PxuMetrics.class.getSimpleName() + "[", "]")
+                .add("registers=" + Arrays.toString(registers))
+                .toString();
     }
 }

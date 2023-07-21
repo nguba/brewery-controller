@@ -2,6 +2,7 @@ package adapter.outputs.pxu;
 
 import adapter.outputs.pxu.event.MetricsFetched;
 import adapter.outputs.pxu.event.ProfileFetched;
+import adapter.outputs.pxu.event.PxuEvent;
 import adapter.outputs.pxu.event.PxuRequestFailed;
 import com.ghgande.j2mod.modbus.facade.AbstractModbusMaster;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
@@ -73,7 +74,8 @@ public class PxuNetwork {
             try {
                 final ModbusRequest request = queue.take();
                 try {
-                    request.execute(eventPublisher);
+                    PxuEvent<?> event = request.execute();
+                    eventPublisher.publish(event);
                 } catch (Exception e) {
                     LOGGER.error("Error executing {}: {}", request.getClass().getSimpleName(), e.getMessage());
                     eventPublisher.publish(PxuRequestFailed.of(request.unitId(), e));
@@ -93,24 +95,23 @@ public class PxuNetwork {
     }
 
     private record QueryMetricsRequest(int unitId, AbstractModbusMaster master) implements ModbusRequest {
-        @Override
-        public void execute(EventPublisher eventPublisher) throws Exception {
+        public MetricsFetched execute() throws Exception {
             final Register[] regs = master.readMultipleRegisters(unitId, 0, 30);
-            eventPublisher.publish(MetricsFetched.of(unitId, new PxuMetrics(regs)));
+            return MetricsFetched.of(unitId, new PxuMetrics(regs));
         }
     }
 
     public interface ModbusRequest {
-        void execute(EventPublisher eventPublisher) throws Exception;
+        PxuEvent<?> execute() throws Exception;
 
         int unitId();
     }
 
     private record QueryProfileRequest(int unitId, ModbusSerialMaster master) implements ModbusRequest {
         @Override
-        public void execute(EventPublisher eventPublisher) throws Exception {
+        public ProfileFetched execute() throws Exception {
             final Register[] regs = master.readMultipleRegisters(unitId, 1100, 30);
-            eventPublisher.publish(ProfileFetched.of(unitId, new PxuProfile(regs)));
+            return ProfileFetched.of(unitId, new PxuProfile(regs));
         }
     }
 }

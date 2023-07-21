@@ -3,6 +3,7 @@ package adapter.outputs.pxu;
 import com.ghgande.j2mod.modbus.procimg.Register;
 
 import java.util.Arrays;
+import java.util.StringJoiner;
 
 /**
  * The PXU profile is a series of 30 registers, each register is 16 bits.
@@ -15,14 +16,14 @@ public class PxuProfile {
         this.regs = regs;
     }
 
-    private final Register[] regs;
-
     @Override
     public String toString() {
-        return "PxuProfile{" +
-                ", regs=" + Arrays.toString(regs) +
-                '}';
+        return new StringJoiner(", ", PxuProfile.class.getSimpleName() + "[", "]")
+                .add("regs=" + Arrays.toString(regs))
+                .toString();
     }
+
+    private final Register[] regs;
 
     public Segment segment(int index) {
         if (index > 14) throw new IllegalArgumentException("A segment index must be between 0 and 14.");
