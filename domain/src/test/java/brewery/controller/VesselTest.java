@@ -2,25 +2,26 @@ package brewery.controller;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class VesselTest {
 
     @Test
-    void hasId() {
-        VesselId expected = VesselId.of(1);
-        Vessel vessel = Vessel.with(expected);
-
-        assertEquals(expected, vessel.id());
+    void isMashTun() {
+        assertThat(Vessel.asMashTun().id()).isEqualTo(VesselId.of("MashTun"));
     }
 
     @Test
     void hasSetpoint() {
-        Vessel vessel = Vessel.with(VesselId.of(1));
-        vessel.setPoint(Temperature.inCelsius(62));
+        Vessel vessel = Vessel.asMashTun();
+        Temperature expectedTemperature = Temperature.inCelsius(62);
+        vessel.setPoint(expectedTemperature);
 
-        assertEquals(Temperature.inCelsius(62), vessel.setPoint());
+        assertThat(vessel.setPoint()).isEqualTo(expectedTemperature);
+    }
 
-        System.out.println(vessel);
+    @Test
+    void toStringHasExpectedFields() {
+        assertThat(Vessel.asMashTun().toString()).isEqualTo("Vessel[id=VesselId[value=MashTun], setPoint=null]");
     }
 }

@@ -1,19 +1,29 @@
 package brewery.controller;
 
+import java.util.StringJoiner;
+
 public class Vessel {
-    private final VesselId vesselId;
+    private final VesselId id;
     private Temperature setPoint;
 
-    private Vessel(VesselId vesselId) {
-        this.vesselId = vesselId;
+    private Vessel(VesselId id) {
+        this.id = id;
     }
 
-    public static Vessel with(VesselId vesselId) {
-        return new Vessel(vesselId);
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Vessel.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("setPoint=" + setPoint)
+                .toString();
     }
 
-    public VesselId vesselId() {
-        return vesselId;
+    public static Vessel with(VesselId id) {
+        return new Vessel(id);
+    }
+
+    public static Vessel asMashTun() {
+        return new Vessel(VesselId.of("MashTun"));
     }
 
     public void setPoint(Temperature setPoint) {
@@ -24,15 +34,7 @@ public class Vessel {
         return setPoint;
     }
 
-    @Override
-    public String toString() {
-        return "Vessel{" +
-                "vesselId=" + vesselId +
-                ", setPoint=" + setPoint +
-                '}';
-    }
-
     public VesselId id() {
-        return vesselId;
+        return id;
     }
 }
