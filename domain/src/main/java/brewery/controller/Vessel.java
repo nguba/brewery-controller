@@ -1,5 +1,6 @@
 package brewery.controller;
 
+import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Vessel {
@@ -52,5 +53,18 @@ public class Vessel {
 
     public VesselId id() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vessel vessel = (Vessel) o;
+        return Objects.equals(id, vessel.id) && Objects.equals(setPoint, vessel.setPoint);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, setPoint);
     }
 }
