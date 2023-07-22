@@ -12,6 +12,12 @@ class VesselTest {
     }
 
     @Test
+    void isHotLiquorTun() {
+        assertThat(Vessel.asHotLiquorTun().id()).isEqualTo(VesselId.of("HotLiquorTun"));
+    }
+
+
+    @Test
     void hasSetpoint() {
         Vessel vessel = Vessel.asMashTun();
         Temperature expectedTemperature = Temperature.inCelsius(62);

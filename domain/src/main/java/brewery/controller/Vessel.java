@@ -10,6 +10,10 @@ public class Vessel {
         this.id = id;
     }
 
+    public static Vessel asHotLiquorTun() {
+        return new Vessel(VesselId.of("HotLiquorTun"));
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Vessel.class.getSimpleName() + "[", "]")
