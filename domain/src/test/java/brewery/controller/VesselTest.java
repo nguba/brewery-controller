@@ -26,6 +26,10 @@ class VesselTest {
         assertThat(Vessel.asFermenter().id()).isEqualTo(VesselId.of("Fermenter"));
     }
 
+    @Test
+    void isConditioningTank() {
+        assertThat(Vessel.asConditioningTank().id()).isEqualTo(VesselId.of("ConditioningTank"));
+    }
 
     @Test
     void hasSetpoint() {

@@ -22,6 +22,10 @@ public class Vessel {
         return new Vessel(VesselId.of("Fermenter"));
     }
 
+    public static Vessel asConditioningTank() {
+        return new Vessel(VesselId.of("ConditioningTank"));
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Vessel.class.getSimpleName() + "[", "]")
