@@ -16,6 +16,16 @@ class VesselTest {
         assertThat(Vessel.asHotLiquorTun().id()).isEqualTo(VesselId.of("HotLiquorTun"));
     }
 
+    @Test
+    void isBoilKettle() {
+        assertThat(Vessel.asBoilKettle().id()).isEqualTo(VesselId.of("BoilKettle"));
+    }
+
+    @Test
+    void isFermenter() {
+        assertThat(Vessel.asFermenter().id()).isEqualTo(VesselId.of("Fermenter"));
+    }
+
 
     @Test
     void hasSetpoint() {

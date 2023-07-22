@@ -14,6 +14,14 @@ public class Vessel {
         return new Vessel(VesselId.of("HotLiquorTun"));
     }
 
+    public static Vessel asBoilKettle() {
+        return new Vessel(VesselId.of("BoilKettle"));
+    }
+
+    public static Vessel asFermenter() {
+        return new Vessel(VesselId.of("Fermenter"));
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Vessel.class.getSimpleName() + "[", "]")
