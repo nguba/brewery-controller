@@ -1,6 +1,6 @@
 package junit.extension;
 
-import adapter.outputs.pxu.PxuNetwork;
+import framework.outputs.pxu.PxuNetwork;
 import org.junit.jupiter.api.extension.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
