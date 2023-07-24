@@ -16,6 +16,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.ghgande:j2mod:3.1.1")
+    implementation("com.fazecast:jSerialComm:2.9.0")
     implementation("com.influxdb:influxdb-client-java:6.9.0")
     implementation("com.google.guava:guava:32.1.1-jre")
 
