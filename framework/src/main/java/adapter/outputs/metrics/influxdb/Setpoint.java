@@ -1,10 +1,11 @@
 package adapter.outputs.metrics.influxdb;
 
+import adapter.outputs.metrics.MetricNames;
 import com.influxdb.annotations.Measurement;
 
 import java.time.Instant;
 
-@Measurement(name = "setpoint")
+@Measurement(name = MetricNames.SETPOINT)
 public class Setpoint extends BaseMeasurement {
 
     /**

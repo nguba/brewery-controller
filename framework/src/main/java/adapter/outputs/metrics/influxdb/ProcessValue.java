@@ -1,10 +1,11 @@
 package adapter.outputs.metrics.influxdb;
 
+import adapter.outputs.metrics.MetricNames;
 import com.influxdb.annotations.Measurement;
 
 import java.time.Instant;
 
-@Measurement(name = "processValue")
+@Measurement(name = MetricNames.PROCESS_VALUE)
 public class ProcessValue extends BaseMeasurement {
 
     /**

@@ -1,11 +1,10 @@
-package adapter.outputs.influxdb;
+package adapter.outputs.metrics.influxdb;
 
-import adapter.outputs.metrics.influxdb.MetricsWriterInfluxDb;
-import adapter.outputs.metrics.influxdb.ProcessValue;
-import adapter.outputs.metrics.influxdb.Setpoint;
+import adapter.outputs.metrics.MetricNames;
 import com.influxdb.client.InfluxDBClient;
 import junit.extension.InfluxVersion;
 import junit.extension.InfluxdbClientExtension;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,28 +43,27 @@ class MetricsWriterInfluxDbTest {
 
     @Test
     void recordSetpoint() {
-
         Setpoint expected = Setpoint.of("6", 55D, Instant.now());
+
         Writer.record(expected);
 
-        String flux = "from(bucket:\"" + Writer.bucket() + "\") |> range(start: 0) |> filter(fn: (r) => r._measurement == \"setpoint\")";
-
-        List<Setpoint> results = client.getQueryApi().query(flux, Setpoint.class);
+        List<Setpoint> results = readMetric(Setpoint.class, MetricNames.SETPOINT);
         assertThat(results).contains(expected);
+    }
 
+    @NotNull
+    private <T> List<T> readMetric(Class<T> clazz, String metricName) {
+        String flux = "from(bucket:\"" + Writer.bucket() + "\") |> range(start: 0) |> filter(fn: (r) => r._measurement == \"" + metricName + "\")";
+        return client.getQueryApi().query(flux, clazz);
     }
 
     @Test
     void recordProcessValue() {
-
         ProcessValue expected = ProcessValue.of("6", 55D, Instant.now());
+
         Writer.record(expected);
 
-        String flux = "from(bucket:\"" + Writer.bucket() + "\") |> range(start: 0) |> filter(fn: (r) => r._measurement == \"processValue\")";
-
-        List<ProcessValue> results = client.getQueryApi().query(flux, ProcessValue.class);
+        List<ProcessValue> results = readMetric(ProcessValue.class, MetricNames.PROCESS_VALUE);
         assertThat(results).contains(expected);
-
     }
-
 }
