@@ -5,6 +5,7 @@ import com.influxdb.annotations.Measurement;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.QueryApi;
 import com.influxdb.client.domain.WritePrecision;
+import junit.extension.InfluxVersion;
 import junit.extension.InfluxdbClientExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * for testing the InfluxDB client.
  */
 @ExtendWith({InfluxdbClientExtension.class})
+@InfluxVersion("2.7.1")
 class DataRecorderTest {
 
     private final InfluxDBClient client;

@@ -9,14 +9,15 @@ import org.slf4j.Logger;
 import org.testcontainers.containers.InfluxDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+
 // Close the DB connection after the test
 public class InfluxdbClientExtension implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(InfluxdbClientExtension.class);
 
-    private final InfluxDBContainer<?> container = new InfluxDBContainer<>(
-            DockerImageName.parse("influxdb:2.7.1")
-    );
+    private InfluxDBContainer<?> container;
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -25,7 +26,7 @@ public class InfluxdbClientExtension implements BeforeAllCallback, AfterAllCallb
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        LOGGER.info("Resolving: {}",  parameterContext.getParameter().getType().getSimpleName());
+        LOGGER.info("Resolving: {}", parameterContext.getParameter().getType().getSimpleName());
 
         return switch (parameterContext.getParameter().getType().getSimpleName()) {
             case "InfluxDBClient" -> resolveInfluxDBClient();
@@ -49,6 +50,15 @@ public class InfluxdbClientExtension implements BeforeAllCallback, AfterAllCallb
 
     @Override
     public void beforeAll(ExtensionContext context) {
+        AtomicReference<String> influxDbVersion = new AtomicReference<>("2.7.0");
+        Optional<InfluxVersion> influxVersion =
+                Optional.ofNullable(context.getRequiredTestClass().getAnnotation(InfluxVersion.class));
+        influxVersion.ifPresent(version -> {
+            influxDbVersion.set(version.value());
+            LOGGER.info("Configuring test for InfluxDB version: " + influxDbVersion);
+        });
+
+        container = new InfluxDBContainer<>(DockerImageName.parse("influxdb:" + influxDbVersion));
         if (!container.isRunning()) {
             LOGGER.info("Starting InfluxDB container");
             container.start();
@@ -57,7 +67,7 @@ public class InfluxdbClientExtension implements BeforeAllCallback, AfterAllCallb
 
     @Override
     public void afterAll(ExtensionContext context) {
-        if(container.isRunning()) {
+        if (container.isRunning()) {
             LOGGER.info("Stopping InfluxDB container");
             container.stop();
         }
