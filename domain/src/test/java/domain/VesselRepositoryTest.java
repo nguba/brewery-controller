@@ -1,4 +1,4 @@
-package brewery.controller;
+package domain;
 
 import org.junit.jupiter.api.Test;
 

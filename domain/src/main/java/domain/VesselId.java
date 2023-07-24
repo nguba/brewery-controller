@@ -1,4 +1,4 @@
-package brewery.controller;
+package domain;
 
 public record VesselId(String value) {
     public static VesselId of(String value) {

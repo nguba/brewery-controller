@@ -1,4 +1,4 @@
-package brewery.controller;
+package domain;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

@@ -1,4 +1,4 @@
-package brewery.controller;
+package domain;
 
 import java.time.Duration;
 import java.util.*;
