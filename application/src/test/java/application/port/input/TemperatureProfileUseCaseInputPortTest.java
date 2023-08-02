@@ -1,7 +1,9 @@
 package application.port.input;
 
 import application.port.output.VesselOutputPort;
+import application.port.output.VesselOutputPortTestDouble;
 import application.usecase.TemperatureProfileUseCase;
+import domain.TemperatureControllerId;
 import domain.TemperatureProfile;
 import domain.Vessel;
 import domain.VesselId;
@@ -9,10 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -27,11 +25,10 @@ class TemperatureProfileUseCaseInputPortTest {
 
     @BeforeEach
     void setUp() {
-        final Map<VesselId, Vessel> vessels = new HashMap<>();
-        final Vessel mashTun = Vessel.with(VesselId.ofMashTun());
+        final Vessel mashTun = Vessel.with(VesselId.ofMashTun(), TemperatureControllerId.of(1));
         vesselId = mashTun.id();
-        vessels.put(mashTun.id(), mashTun);
-        vesselOutputPort = new MyVesselOutputPort(vessels);
+        vesselOutputPort = new VesselOutputPortTestDouble();
+        vesselOutputPort.addVessel(mashTun);
         useCase = TemperatureProfileUseCaseInputPort.with(vesselOutputPort);
     }
 
@@ -52,30 +49,12 @@ class TemperatureProfileUseCaseInputPortTest {
     @Test
     @DisplayName("I should be able to retrieve a profile after saving it to the vessel")
     void saveProfile_andLookup() {
-        assertThat(vesselOutputPort.fetchVessel(vesselId)).isPresent();
-        assertThat(vesselOutputPort.fetchVessel(vesselId).get().profile()).isNull();
+        assertThat(vesselOutputPort.findVessel(vesselId)).isPresent();
+        assertThat(vesselOutputPort.findVessel(vesselId).get().profile()).isNull();
 
         useCase.saveProfile(vesselId, profile);
 
-        assertThat(vesselOutputPort.fetchVessel(vesselId).get().profile()).isEqualTo(profile);
-    }
-
-    private record MyVesselOutputPort(Map<VesselId, Vessel> vessels) implements VesselOutputPort {
-
-        @Override
-        public Optional<Vessel> fetchVessel(VesselId id) {
-            return Optional.ofNullable(vessels.get(id));
-        }
-
-        @Override
-        public void saveProfile(VesselId id, TemperatureProfile profile) {
-            fetchVessel(id).ifPresent(vessel -> vessel.profile(profile));
-        }
-
-        @Override
-        public void addMapping(VesselId id, int unitId) {
-
-        }
+        assertThat(vesselOutputPort.findVessel(vesselId).get().profile()).isEqualTo(profile);
     }
 
     @Test

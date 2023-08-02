@@ -1,28 +1,31 @@
 package domain;
 
-import java.lang.ref.PhantomReference;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Vessel {
     private final VesselId id;
+    private final TemperatureControllerId temperatureControllerId;
     private Temperature setPoint;
     private TemperatureProfile profile;
 
-    private Vessel(VesselId id) {
+    private Vessel(VesselId id, TemperatureControllerId temperatureControllerId) {
         this.id = id;
+        this.temperatureControllerId = temperatureControllerId;
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", Vessel.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
+                .add("temperatureControllerId=" + temperatureControllerId)
                 .add("setPoint=" + setPoint)
+                .add("profile=" + profile)
                 .toString();
     }
 
-    public static Vessel with(VesselId id) {
-        return new Vessel(id);
+    public static Vessel with(VesselId vesselId, TemperatureControllerId temperatureControllerId) {
+        return new Vessel(vesselId, temperatureControllerId);
     }
 
     public void setPoint(Temperature setPoint) {
@@ -56,5 +59,9 @@ public class Vessel {
 
     public TemperatureProfile profile() {
         return profile;
+    }
+
+    public TemperatureControllerId temperatureControllerId() {
+        return temperatureControllerId;
     }
 }

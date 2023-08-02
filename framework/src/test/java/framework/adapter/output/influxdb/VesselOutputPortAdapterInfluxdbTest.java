@@ -3,6 +3,7 @@ package framework.adapter.output.influxdb;
 import application.port.output.VesselOutputPort;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.domain.WritePrecision;
+import domain.TemperatureControllerId;
 import domain.Vessel;
 import domain.VesselId;
 import junit.InfluxDbFixture;
@@ -27,7 +28,7 @@ class VesselOutputPortAdapterInfluxdbTest {
 
     @Test
     void findVessel() {
-        final Vessel vessel = Vessel.with(VesselId.of("Test Vessel"));
+        final Vessel vessel = Vessel.with(VesselId.of("Test Vessel"), TemperatureControllerId.of(1));
         final VesselMapping mapping = new VesselMapping();
         mapping.vesselId = vessel.id().value();
         mapping.value = 6;

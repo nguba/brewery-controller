@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface VesselOutputPort {
 
-    Optional<Vessel> fetchVessel(VesselId id);
+    Optional<Vessel> findVessel(VesselId id);
 
     void saveProfile(VesselId id, TemperatureProfile profile);
 
-    void addMapping(VesselId id, int unitId);
+    void addVessel(Vessel vessel);
 }

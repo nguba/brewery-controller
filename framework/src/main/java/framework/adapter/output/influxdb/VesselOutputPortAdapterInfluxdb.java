@@ -21,7 +21,7 @@ public class VesselOutputPortAdapterInfluxdb implements VesselOutputPort {
     }
 
     @Override
-    public Optional<Vessel> fetchVessel(VesselId id) {
+    public Optional<Vessel> findVessel(VesselId id) {
         return null;
     }
 
@@ -31,7 +31,7 @@ public class VesselOutputPortAdapterInfluxdb implements VesselOutputPort {
     }
 
     @Override
-    public void addMapping(VesselId id, int unitId) {
-
+    public void addVessel(Vessel vessel) {
+        
     }
 }
