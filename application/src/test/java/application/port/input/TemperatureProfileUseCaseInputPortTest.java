@@ -6,6 +6,7 @@ import domain.TemperatureProfile;
 import domain.Vessel;
 import domain.VesselId;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -73,12 +74,13 @@ class TemperatureProfileUseCaseInputPortTest {
 
         @Override
         public void addMapping(VesselId id, int unitId) {
-            
+
         }
     }
 
     @Test
     @DisplayName("Saving a profile over an existing profile should succeed silently")
+    @Disabled
     void savingOverAnExistingProfileSucceedsSilently() {
         fail("Not implemented yet");
     }

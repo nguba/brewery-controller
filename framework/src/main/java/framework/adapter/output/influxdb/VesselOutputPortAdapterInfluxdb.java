@@ -29,4 +29,9 @@ public class VesselOutputPortAdapterInfluxdb implements VesselOutputPort {
     public void saveProfile(VesselId id, TemperatureProfile profile) {
 
     }
+
+    @Override
+    public void addMapping(VesselId id, int unitId) {
+
+    }
 }
