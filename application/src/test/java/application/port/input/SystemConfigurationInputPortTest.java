@@ -20,9 +20,12 @@ class SystemConfigurationInputPortTest {
 
     SystemConfigurationInputPort inputPort;
 
+    Vessel vessel;
+
     @BeforeEach
     void setUp() {
         inputPort = SystemConfigurationInputPort.with(vesselOutputPort);
+        vessel = Vessel.with(vesselId, temperatureControllerId);
     }
 
     @Test
@@ -43,10 +46,10 @@ class SystemConfigurationInputPortTest {
 
     @Test
     @DisplayName("Successfully adding a vessel allows it to be retrieved by id")
-    void addVessel() {
+    void addVesselIsPresent() {
         assertThat(vesselOutputPort.findVessel(vesselId)).isEmpty();
 
-        inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId));
+        addVessel();
 
         assertThat(vesselOutputPort.findVessel(vesselId)).isPresent();
     }
@@ -56,18 +59,21 @@ class SystemConfigurationInputPortTest {
     void addVesselWithControllerId() {
         assertThat(vesselOutputPort.findVessel(vesselId)).isEmpty();
 
-        inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId));
+        addVessel();
 
         assertThat(vesselOutputPort.findTemperatureControllerId(vesselId)).isEqualTo(temperatureControllerId);
+    }
+
+    private void addVessel() {
+        inputPort.addVessel(vessel);
     }
 
     @Test
     @DisplayName("Adding a vessel with a vessel id that already exists will throw an exception")
     void addVesselAlreadyRegistered() {
-        inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId));
+        addVessel();
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId)))
+                .isThrownBy(() -> addVessel())
                 .withMessage("Vessel with VesselId[value=test] already exists, remove the vessel first");
-
     }
 }

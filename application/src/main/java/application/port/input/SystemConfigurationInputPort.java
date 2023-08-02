@@ -33,6 +33,5 @@ public class SystemConfigurationInputPort implements SystemConfigurationUseCase 
                     vesselOutputPort.registerTemperatureController(vessel.id(), vessel.temperatureControllerId());
                 }
         );
-
     }
 }
