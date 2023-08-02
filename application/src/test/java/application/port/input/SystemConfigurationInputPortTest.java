@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.*;
 class SystemConfigurationInputPortTest {
     VesselId vesselId = VesselId.of("test");
 
+    TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(6);
+
     VesselOutputPort vesselOutputPort = new VesselOutputPortTestDouble();
 
     SystemConfigurationInputPort inputPort;
@@ -44,8 +46,18 @@ class SystemConfigurationInputPortTest {
     void addVessel() {
         assertThat(vesselOutputPort.findVessel(vesselId)).isEmpty();
 
-        inputPort.addVessel(Vessel.with(vesselId, TemperatureControllerId.of(6)));
+        inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId));
 
         assertThat(vesselOutputPort.findVessel(vesselId)).isPresent();
+    }
+
+    @Test
+    @DisplayName("Successfully adding a vessel allows the temperature controller id to be retrieved by vessel id")
+    void addVesselWithControllerId() {
+        assertThat(vesselOutputPort.findVessel(vesselId)).isEmpty();
+
+        inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId));
+
+        assertThat(vesselOutputPort.findTemperatureControllerId(vesselId)).isEqualTo(temperatureControllerId);
     }
 }

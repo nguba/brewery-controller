@@ -1,5 +1,6 @@
 package application.port.output;
 
+import domain.TemperatureControllerId;
 import domain.TemperatureProfile;
 import domain.Vessel;
 import domain.VesselId;
@@ -13,4 +14,8 @@ public interface VesselOutputPort {
     void saveProfile(VesselId id, TemperatureProfile profile);
 
     void addVessel(Vessel vessel);
+
+    void registerTemperatureController(VesselId id, TemperatureControllerId temperatureControllerId);
+
+    TemperatureControllerId findTemperatureControllerId(VesselId id);
 }

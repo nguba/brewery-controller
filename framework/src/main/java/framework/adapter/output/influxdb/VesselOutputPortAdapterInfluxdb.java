@@ -2,6 +2,8 @@ package framework.adapter.output.influxdb;
 
 import application.port.output.VesselOutputPort;
 import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.domain.WritePrecision;
+import domain.TemperatureControllerId;
 import domain.TemperatureProfile;
 import domain.Vessel;
 import domain.VesselId;
@@ -27,11 +29,20 @@ public class VesselOutputPortAdapterInfluxdb implements VesselOutputPort {
 
     @Override
     public void saveProfile(VesselId id, TemperatureProfile profile) {
-
     }
 
     @Override
     public void addVessel(Vessel vessel) {
-        
+        client.getWriteApiBlocking().writeMeasurement("test-bucket", "test-org", WritePrecision.NS, vessel);
+    }
+
+    @Override
+    public void registerTemperatureController(VesselId id, TemperatureControllerId temperatureControllerId) {
+
+    }
+
+    @Override
+    public TemperatureControllerId findTemperatureControllerId(VesselId id) {
+        return null;
     }
 }
