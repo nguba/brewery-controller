@@ -9,6 +9,10 @@ import junit.InfluxDbFixture;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.InfluxDBContainer;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @InfluxDbFixture
 class VesselOutputPortAdapterInfluxdbTest {
 
@@ -23,16 +27,26 @@ class VesselOutputPortAdapterInfluxdbTest {
 
     @Test
     void findVessel() {
-        final Vessel vessel = Vessel.with(VesselId.ofBoilKettle());
+        final Vessel vessel = Vessel.with(VesselId.of("Test Vessel"));
         final VesselMapping mapping = new VesselMapping();
         mapping.vesselId = vessel.id().value();
         mapping.value = 6;
 
-        writeRecord(mapping);
+        write(mapping);
+
+        final List<VesselMapping> vessels = find(VesselMapping.class, "vessel_mapping");
+        System.out.println(vessels);
+
+        assertThat(vessels).containsExactly(mapping);
     }
 
-    private void writeRecord(Object object) {
-        client.getWriteApiBlocking().writeRecord("test-bucket", "test-org", WritePrecision.NS, "vessel,unitId=1,unitName=Vessel1,unitType=Vessel value=1.0");
+    private void write(Object object) {
+        client.getWriteApiBlocking().writeMeasurement("test-bucket", "test-org", WritePrecision.NS, object);
+    }
+
+    private <T> List<T> find(Class<T> clazz, String measurementName) {
+        String flux = "from(bucket:\"test-bucket\") |> range(start: 0) |> filter(fn: (r) => r._measurement == \"" + measurementName + "\")";
+        return client.getQueryApi().query(flux, clazz);
     }
 }
 

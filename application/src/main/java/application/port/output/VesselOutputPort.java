@@ -11,4 +11,6 @@ public interface VesselOutputPort {
     Optional<Vessel> fetchVessel(VesselId id);
 
     void saveProfile(VesselId id, TemperatureProfile profile);
+
+    void addMapping(VesselId id, int unitId);
 }

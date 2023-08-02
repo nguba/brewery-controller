@@ -70,6 +70,11 @@ class TemperatureProfileUseCaseInputPortTest {
         public void saveProfile(VesselId id, TemperatureProfile profile) {
             fetchVessel(id).ifPresent(vessel -> vessel.profile(profile));
         }
+
+        @Override
+        public void addMapping(VesselId id, int unitId) {
+            
+        }
     }
 
     @Test
