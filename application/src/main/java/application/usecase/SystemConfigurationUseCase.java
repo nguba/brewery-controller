@@ -7,5 +7,5 @@ import domain.Vessel;
  */
 public interface SystemConfigurationUseCase {
 
-    void addVessel(Vessel vessel);
+    void registerVessel(Vessel vessel);
 }

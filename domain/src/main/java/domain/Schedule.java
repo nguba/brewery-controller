@@ -12,8 +12,17 @@ import java.util.*;
  * It can contain up to 15 segments max.
  * </p>
  */
-public class TemperatureProfile {
+public class Schedule {
     private final List<Segment> segments = new ArrayList<>(15);
+    private final String name;
+
+    private Schedule(String name) {
+        this.name = name;
+    }
+
+    public static Schedule create(String name) {
+        return new Schedule(name);
+    }
 
     /**
      * Adds a segment to the profile.
@@ -22,25 +31,17 @@ public class TemperatureProfile {
      * @throws IndexOutOfBoundsException if the profile already contains 15 segments
      */
     public void addSegment(Segment segment) {
-        if(segments.size() >= 15)
+        if (segments.size() >= 15)
             throw new IndexOutOfBoundsException("A profile cannot contain more than 15 segments");
 
-        if(!segments.isEmpty()) {
+        if (!segments.isEmpty()) {
             Segment previousSegment = segments.get(segments.size() - 1);
-            if(previousSegment.type().equals(Segment.Type.SOAK))
+            if (previousSegment.type().equals(Segment.Type.SOAK))
                 segments.add(segment.asRampType());
             else
                 segments.add(segment);
-        }
-        else
+        } else
             segments.add(segment);
-    }
-
-    private TemperatureProfile() {
-    }
-
-    public static TemperatureProfile create() {
-        return new TemperatureProfile();
     }
 
     /**
@@ -58,7 +59,7 @@ public class TemperatureProfile {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", TemperatureProfile.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", Schedule.class.getSimpleName() + "[", "]")
                 .add("segments=" + segments)
                 .toString();
     }
@@ -66,14 +67,6 @@ public class TemperatureProfile {
     // list of segments containing the setpoint and the time.
     public static class Segment {
         private final Type type;
-
-        public Segment asRampType() {
-            return new Segment(setpoint, duration, Type.RAMP);
-        }
-
-        enum Type {
-            SOAK, RAMP
-        }
         private final Temperature setpoint;
         private final Duration duration;
 
@@ -90,8 +83,12 @@ public class TemperatureProfile {
 
         // this rule is enforced by the PXU - a segment cannot be longer than 900 minutes
         private static void validateDuration(Duration duration) {
-            if(duration.toMinutes() > 900) // this is a controller limitation, not a domain limitation
+            if (duration.toMinutes() > 900) // this is a controller limitation, not a domain limitation
                 throw new IllegalArgumentException("Duration cannot exceed 900 minutes");
+        }
+
+        public Segment asRampType() {
+            return new Segment(setpoint, duration, Type.RAMP);
         }
 
         public Temperature setpoint() {
@@ -126,6 +123,10 @@ public class TemperatureProfile {
         @Override
         public int hashCode() {
             return Objects.hash(type, setpoint, duration);
+        }
+
+        enum Type {
+            SOAK, RAMP
         }
     }
 }

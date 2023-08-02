@@ -8,10 +8,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class SegmentTest {
-    TemperatureProfile.Segment segment = makeSegment(900);
+    Schedule.Segment segment = makeSegment(900);
 
-    private static TemperatureProfile.Segment makeSegment(int minutes) {
-        return TemperatureProfile.Segment.with(Temperature.inCelsius(55.0), Duration.ofMinutes(minutes));
+    private static Schedule.Segment makeSegment(int minutes) {
+        return Schedule.Segment.with(Temperature.inCelsius(55.0), Duration.ofMinutes(minutes));
     }
 
     @Test
@@ -33,12 +33,12 @@ class SegmentTest {
 
     @Test
     void isSoakByDefault() {
-        assertThat(segment.type()).isEqualTo(TemperatureProfile.Segment.Type.SOAK);
+        assertThat(segment.type()).isEqualTo(Schedule.Segment.Type.SOAK);
     }
 
     @Test
     void isRampType() {
-        assertThat(segment.asRampType().type()).isEqualTo(TemperatureProfile.Segment.Type.RAMP);
+        assertThat(segment.asRampType().type()).isEqualTo(Schedule.Segment.Type.RAMP);
     }
 
 

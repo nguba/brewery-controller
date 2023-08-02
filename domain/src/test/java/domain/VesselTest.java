@@ -22,13 +22,13 @@ class VesselTest {
     @DisplayName("toString contains expected information")
     void toStringHasExpectedFields() {
         assertThat(vessel.toString())
-                .isEqualTo("Vessel[id=VesselId[value=BoilKettle], temperatureControllerId=TemperatureControllerId[value=1], setPoint=null, profile=null]");
+                .isEqualTo("Vessel[id=VesselId[value=BoilKettle], temperatureControllerId=TemperatureControllerId[value=1], setPoint=null, schedule=null]");
     }
 
     @Test
     @DisplayName("can access the temperature profile")
     void hasProfile() {
-        TemperatureProfile expected = TemperatureProfile.create();
+        Schedule expected = Schedule.create("Test Schedule");
         vessel.profile(expected);
 
         assertThat(vessel.profile()).isEqualTo(expected);

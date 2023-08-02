@@ -4,14 +4,13 @@ package framework.adapter.output.influxdb;
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;
 import domain.TemperatureControllerId;
-import domain.Vessel;
 import domain.VesselId;
 
 import java.util.Objects;
 import java.util.StringJoiner;
 
-@Measurement(name = "vessel")
-public class VesselMeasurement {
+@Measurement(name = "temperature_controller")
+public class TemperatureControllerMeasurement {
 
     @Column(tag = true)
     protected String vesselId;
@@ -23,7 +22,7 @@ public class VesselMeasurement {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VesselMeasurement that = (VesselMeasurement) o;
+        TemperatureControllerMeasurement that = (TemperatureControllerMeasurement) o;
         return Objects.equals(vesselId, that.vesselId) && Objects.equals(value, that.value);
     }
 
@@ -34,13 +33,20 @@ public class VesselMeasurement {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", VesselMeasurement.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", TemperatureControllerMeasurement.class.getSimpleName() + "[", "]")
                 .add("vesselId='" + vesselId + "'")
                 .add("value=" + value)
                 .toString();
     }
 
-    public Vessel toDomain() {
-        return Vessel.with(VesselId.of(vesselId), TemperatureControllerId.of(value));
+    public static TemperatureControllerMeasurement with(VesselId vesselId, TemperatureControllerId temperatureControllerId) {
+        TemperatureControllerMeasurement temperatureControllerMeasurement = new TemperatureControllerMeasurement();
+        temperatureControllerMeasurement.vesselId = vesselId.value();
+        temperatureControllerMeasurement.value = temperatureControllerId.value();
+        return temperatureControllerMeasurement;
+    }
+
+    public TemperatureControllerId toDomain() {
+        return TemperatureControllerId.of(value);
     }
 }
