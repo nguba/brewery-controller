@@ -8,6 +8,7 @@ import domain.TemperatureProfile;
 import domain.Vessel;
 import domain.VesselId;
 
+import java.util.List;
 import java.util.Optional;
 
 public class VesselOutputPortAdapterInfluxdb implements VesselOutputPort {
@@ -24,7 +25,10 @@ public class VesselOutputPortAdapterInfluxdb implements VesselOutputPort {
 
     @Override
     public Optional<Vessel> findVessel(VesselId id) {
-        return null;
+        String flux = "from(bucket:\"test-bucket\") |> range(start: 0) |> filter(fn: (r) => r._measurement == \"vessel\")";
+        List<VesselMeasurement> vessels = client.getQueryApi().query(flux, VesselMeasurement.class);
+
+        return vessels.isEmpty() ? Optional.empty() : Optional.ofNullable(vessels.get(0).toDomain());
     }
 
     @Override
@@ -33,7 +37,11 @@ public class VesselOutputPortAdapterInfluxdb implements VesselOutputPort {
 
     @Override
     public void addVessel(Vessel vessel) {
-        client.getWriteApiBlocking().writeMeasurement("test-bucket", "test-org", WritePrecision.NS, vessel);
+        final VesselMeasurement measurement = new VesselMeasurement();
+        measurement.vesselId = vessel.id().value();
+        measurement.value = 6;
+
+        client.getWriteApiBlocking().writeMeasurement("test-bucket", "test-org", WritePrecision.NS, measurement);
     }
 
     @Override

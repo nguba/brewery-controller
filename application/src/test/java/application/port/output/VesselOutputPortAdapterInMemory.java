@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class VesselOutputPortTestDouble implements VesselOutputPort {
+public class VesselOutputPortAdapterInMemory implements VesselOutputPort {
 
     private final Map<VesselId, Vessel> vessels = new HashMap<>();
 

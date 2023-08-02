@@ -7,6 +7,7 @@ import domain.TemperatureControllerId;
 import domain.Vessel;
 import domain.VesselId;
 import junit.InfluxDbFixture;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.InfluxDBContainer;
 
@@ -21,24 +22,25 @@ class VesselOutputPortAdapterInfluxdbTest {
 
     private final InfluxDBClient client;
 
+    final Vessel vessel = Vessel.with(VesselId.of("Test Vessel"), TemperatureControllerId.of(1));
+
     public VesselOutputPortAdapterInfluxdbTest(InfluxDBClient client, InfluxDBContainer<?> container) {
         this.client = client;
         port = VesselOutputPortAdapterInfluxdb.with(client);
     }
 
     @Test
-    void findVessel() {
-        final Vessel vessel = Vessel.with(VesselId.of("Test Vessel"), TemperatureControllerId.of(1));
-        final VesselMapping mapping = new VesselMapping();
-        mapping.vesselId = vessel.id().value();
-        mapping.value = 6;
+    @DisplayName("Adding a vessel should write a measurement which can be found")
+    void findVesselExists() {
+        port.addVessel(vessel);
 
-        write(mapping);
+        assertThat(port.findVessel(vessel.id()).get()).isEqualTo(vessel);
+    }
 
-        final List<VesselMapping> vessels = find(VesselMapping.class, "vessel_mapping");
-        System.out.println(vessels);
-
-        assertThat(vessels).containsExactly(mapping);
+    @Test
+    @DisplayName("Finding a non existing vessel should return empty optional")
+    void findVesselNotExists() {
+        assertThat(port.findVessel(vessel.id())).isEmpty();
     }
 
     private void write(Object object) {

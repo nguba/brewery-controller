@@ -1,7 +1,7 @@
 package application.port.input;
 
 import application.port.output.VesselOutputPort;
-import application.port.output.VesselOutputPortTestDouble;
+import application.port.output.VesselOutputPortAdapterInMemory;
 import domain.TemperatureControllerId;
 import domain.Vessel;
 import domain.VesselId;
@@ -16,7 +16,7 @@ class SystemConfigurationInputPortTest {
 
     TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(6);
 
-    VesselOutputPort vesselOutputPort = new VesselOutputPortTestDouble();
+    VesselOutputPort vesselOutputPort = new VesselOutputPortAdapterInMemory();
 
     SystemConfigurationInputPort inputPort;
 
@@ -72,6 +72,7 @@ class SystemConfigurationInputPortTest {
     @DisplayName("Adding a vessel with a vessel id that already exists will throw an exception")
     void addVesselAlreadyRegistered() {
         addVessel();
+        
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> addVessel())
                 .withMessage("Vessel with VesselId[value=test] already exists, remove the vessel first");

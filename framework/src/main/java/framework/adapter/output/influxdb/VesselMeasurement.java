@@ -3,12 +3,15 @@ package framework.adapter.output.influxdb;
 
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;
+import domain.TemperatureControllerId;
+import domain.Vessel;
+import domain.VesselId;
 
 import java.util.Objects;
 import java.util.StringJoiner;
 
-@Measurement(name = "vessel_mapping")
-public class VesselMapping {
+@Measurement(name = "vessel")
+public class VesselMeasurement {
 
     @Column(tag = true)
     protected String vesselId;
@@ -20,7 +23,7 @@ public class VesselMapping {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VesselMapping that = (VesselMapping) o;
+        VesselMeasurement that = (VesselMeasurement) o;
         return Objects.equals(vesselId, that.vesselId) && Objects.equals(value, that.value);
     }
 
@@ -31,9 +34,13 @@ public class VesselMapping {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", VesselMapping.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", VesselMeasurement.class.getSimpleName() + "[", "]")
                 .add("vesselId='" + vesselId + "'")
                 .add("value=" + value)
                 .toString();
+    }
+
+    public Vessel toDomain() {
+        return Vessel.with(VesselId.of(vesselId), TemperatureControllerId.of(value));
     }
 }
