@@ -60,4 +60,14 @@ class SystemConfigurationInputPortTest {
 
         assertThat(vesselOutputPort.findTemperatureControllerId(vesselId)).isEqualTo(temperatureControllerId);
     }
+
+    @Test
+    @DisplayName("Adding a vessel with a vessel id that already exists will throw an exception")
+    void addVesselAlreadyRegistered() {
+        inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> inputPort.addVessel(Vessel.with(vesselId, temperatureControllerId)))
+                .withMessage("Vessel with VesselId[value=test] already exists, remove the vessel first");
+
+    }
 }

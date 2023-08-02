@@ -24,7 +24,15 @@ public class SystemConfigurationInputPort implements SystemConfigurationUseCase 
         if (vessel.temperatureControllerId() == null) {
             throw new IllegalArgumentException("Vessel cannot have a null temperature controller");
         }
-        vesselOutputPort.addVessel(vessel);
-        vesselOutputPort.registerTemperatureController(vessel.id(), vessel.temperatureControllerId());
+        vesselOutputPort.findVessel(vessel.id()).ifPresentOrElse(
+                existingVessel -> {
+                    throw new IllegalArgumentException("Vessel with " + vessel.id() + " already exists, remove the vessel first");
+                },
+                () -> {
+                    vesselOutputPort.addVessel(vessel);
+                    vesselOutputPort.registerTemperatureController(vessel.id(), vessel.temperatureControllerId());
+                }
+        );
+
     }
 }
