@@ -19,6 +19,12 @@ dependencies {
     implementation("com.fazecast:jSerialComm:2.9.0")
     implementation("com.influxdb:influxdb-client-java:6.9.0")
     implementation("com.google.guava:guava:32.1.1-jre")
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
+    modules {
+        module("org.springframework.boot:spring-boot-starter-tomcat") {
+            replacedBy("org.springframework.boot:spring-boot-starter-undertow", "Use Undertow instead of Tomcat")
+        }
+    }
 
     testImplementation("org.testcontainers:testcontainers:${testContainersVersion}")
     testImplementation("org.testcontainers:influxdb:${testContainersVersion}")
