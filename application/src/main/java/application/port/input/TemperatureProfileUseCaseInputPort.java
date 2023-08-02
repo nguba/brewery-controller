@@ -3,7 +3,6 @@ package application.port.input;
 import application.port.output.VesselOutputPort;
 import application.usecase.TemperatureProfileUseCase;
 import domain.TemperatureProfile;
-import domain.Vessel;
 import domain.VesselId;
 
 public class TemperatureProfileUseCaseInputPort implements TemperatureProfileUseCase {
@@ -16,7 +15,7 @@ public class TemperatureProfileUseCaseInputPort implements TemperatureProfileUse
         return new TemperatureProfileUseCaseInputPort(vesselOutputPort);
     }
 
-    VesselOutputPort vesselOutputPort;
+    private final VesselOutputPort vesselOutputPort;
 
     @Override
     public void saveProfile(VesselId id, TemperatureProfile profile) {
