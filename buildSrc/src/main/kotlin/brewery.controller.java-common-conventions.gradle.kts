@@ -20,7 +20,7 @@ dependencies {
 
     // Use JUnit Jupiter API for testing.
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14.2")
+    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.15.1")
     // https://mvnrepository.com/artifact/org.assertj/assertj-core
     testImplementation("org.assertj:assertj-core:3.24.2")
 }
