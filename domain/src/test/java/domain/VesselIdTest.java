@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class VesselIdTest {
 
@@ -27,9 +26,9 @@ class VesselIdTest {
     }
 
     @Test
-    @DisplayName("ofConditioningTank() should return a VesselId with the value 'ConditioningTank'")
-    void ofConditioningTank() {
-        assertThat(VesselId.ofConditioningTank()).isEqualTo(VesselId.of("ConditioningTank"));
+    @DisplayName("ofCellar() should return a VesselId with the value 'Cellar'")
+    void ofCellar() {
+        assertThat(VesselId.ofCellar()).isEqualTo(VesselId.of("Cellar"));
     }
 
     @Test

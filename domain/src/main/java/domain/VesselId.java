@@ -17,8 +17,8 @@ public record VesselId(String value) {
         return VesselId.of("Fermenter");
     }
 
-    public static VesselId ofConditioningTank() {
-        return VesselId.of("ConditioningTank");
+    public static VesselId ofCellar() {
+        return VesselId.of("Cellar");
     }
 
     public static VesselId ofMashTun() {
