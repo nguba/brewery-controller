@@ -1,6 +1,6 @@
 package junit;
 
-import framework.inputs.server.BreweryServer;
+import framework.BreweryServer;
 import junit.extension.PxuNetworkExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

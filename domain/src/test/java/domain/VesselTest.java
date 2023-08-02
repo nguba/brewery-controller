@@ -6,34 +6,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class VesselTest {
 
-    @Test
-    void isMashTun() {
-        assertThat(Vessel.asMashTun().id()).isEqualTo(VesselId.of("MashTun"));
-    }
-
-    @Test
-    void isHotLiquorTun() {
-        assertThat(Vessel.asHotLiquorTun().id()).isEqualTo(VesselId.of("HotLiquorTun"));
-    }
-
-    @Test
-    void isBoilKettle() {
-        assertThat(Vessel.asBoilKettle().id()).isEqualTo(VesselId.of("BoilKettle"));
-    }
-
-    @Test
-    void isFermenter() {
-        assertThat(Vessel.asFermenter().id()).isEqualTo(VesselId.of("Fermenter"));
-    }
-
-    @Test
-    void isConditioningTank() {
-        assertThat(Vessel.asConditioningTank().id()).isEqualTo(VesselId.of("ConditioningTank"));
-    }
+    Vessel vessel = Vessel.with(VesselId.ofBoilKettle());
 
     @Test
     void hasSetpoint() {
-        Vessel vessel = Vessel.asMashTun();
         Temperature expectedTemperature = Temperature.inCelsius(62);
         vessel.setPoint(expectedTemperature);
 
@@ -42,6 +18,14 @@ class VesselTest {
 
     @Test
     void toStringHasExpectedFields() {
-        assertThat(Vessel.asMashTun().toString()).isEqualTo("Vessel[id=VesselId[value=MashTun], setPoint=null]");
+        assertThat(vessel.toString()).isEqualTo("Vessel[id=VesselId[value=BoilKettle], setPoint=null]");
+    }
+
+    @Test
+    void hasProfile() {
+        TemperatureProfile expected = TemperatureProfile.create();
+        vessel.profile(expected);
+
+        assertThat(vessel.profile()).isEqualTo(expected);
     }
 }

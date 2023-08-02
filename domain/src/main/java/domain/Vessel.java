@@ -1,30 +1,16 @@
 package domain;
 
+import java.lang.ref.PhantomReference;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Vessel {
     private final VesselId id;
     private Temperature setPoint;
+    private TemperatureProfile profile;
 
     private Vessel(VesselId id) {
         this.id = id;
-    }
-
-    public static Vessel asHotLiquorTun() {
-        return new Vessel(VesselId.of("HotLiquorTun"));
-    }
-
-    public static Vessel asBoilKettle() {
-        return new Vessel(VesselId.of("BoilKettle"));
-    }
-
-    public static Vessel asFermenter() {
-        return new Vessel(VesselId.of("Fermenter"));
-    }
-
-    public static Vessel asConditioningTank() {
-        return new Vessel(VesselId.of("ConditioningTank"));
     }
 
     @Override
@@ -37,10 +23,6 @@ public class Vessel {
 
     public static Vessel with(VesselId id) {
         return new Vessel(id);
-    }
-
-    public static Vessel asMashTun() {
-        return new Vessel(VesselId.of("MashTun"));
     }
 
     public void setPoint(Temperature setPoint) {
@@ -66,5 +48,13 @@ public class Vessel {
     @Override
     public int hashCode() {
         return Objects.hash(id, setPoint);
+    }
+
+    public void profile(TemperatureProfile profile) {
+        this.profile = profile;
+    }
+
+    public TemperatureProfile profile() {
+        return profile;
     }
 }

@@ -1,4 +1,4 @@
-package framework.inputs.server;
+package framework;
 
 import framework.outputs.pxu.EventPublisher;
 import framework.outputs.pxu.PxuNetwork;

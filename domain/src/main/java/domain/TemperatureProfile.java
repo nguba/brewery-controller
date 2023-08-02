@@ -25,7 +25,7 @@ public class TemperatureProfile {
         if(segments.size() >= 15)
             throw new IndexOutOfBoundsException("A profile cannot contain more than 15 segments");
 
-        if(segments.size() > 0) {
+        if(!segments.isEmpty()) {
             Segment previousSegment = segments.get(segments.size() - 1);
             if(previousSegment.type().equals(Segment.Type.SOAK))
                 segments.add(segment.asRampType());
