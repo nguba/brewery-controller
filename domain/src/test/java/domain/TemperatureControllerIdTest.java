@@ -17,7 +17,6 @@ class TemperatureControllerIdTest {
     @Test
     @DisplayName("toString contains expected information")
     public void toStringContainsValue() {
-        TemperatureControllerId temperatureControllerId = new TemperatureControllerId(1);
-        assertThat(temperatureControllerId.value()).isEqualTo(1);
+        assertThat(TemperatureControllerId.of(1).value()).isEqualTo(1);
     }
 }
