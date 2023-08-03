@@ -1,8 +1,8 @@
-package framework.outputs.pxu;
+package framework.adapter.output.pxu;
 
-import framework.outputs.pxu.event.MetricsFetched;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import framework.adapter.output.pxu.event.MetricsFetched;
 import junit.AsyncTestUtils;
 import junit.PxuTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,6 @@ class PxuMetricsTest {
         this.pxu = pxu;
     }
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private EventBus eventBus;
 

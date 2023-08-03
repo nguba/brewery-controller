@@ -1,4 +1,4 @@
-package framework.outputs.pxu.event;
+package framework.adapter.output.pxu.event;
 
 class PxuRequestFailedTest extends PxuEventFixture<PxuRequestFailed, Exception> {
 

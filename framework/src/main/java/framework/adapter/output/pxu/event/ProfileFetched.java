@@ -1,6 +1,6 @@
-package framework.outputs.pxu.event;
+package framework.adapter.output.pxu.event;
 
-import framework.outputs.pxu.PxuProfile;
+import framework.adapter.output.pxu.PxuProfile;
 
 import java.util.StringJoiner;
 

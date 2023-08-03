@@ -1,8 +1,8 @@
-package framework.outputs.pxu.event;
+package framework.adapter.output.pxu.event;
 
-import framework.outputs.pxu.PxuProfile;
-import framework.outputs.pxu.PxuTestConstants;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import framework.adapter.output.pxu.PxuProfile;
+import framework.adapter.output.pxu.PxuTestConstants;
 
 class ProfileFetchedTest extends PxuEventFixture<ProfileFetched, PxuProfile> {
 

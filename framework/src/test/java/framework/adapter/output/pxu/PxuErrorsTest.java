@@ -1,8 +1,8 @@
-package framework.outputs.pxu;
+package framework.adapter.output.pxu;
 
-import framework.outputs.pxu.event.PxuRequestFailed;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import framework.adapter.output.pxu.event.PxuRequestFailed;
 import junit.AsyncTestUtils;
 import junit.PxuTest;
 import org.junit.jupiter.api.BeforeEach;

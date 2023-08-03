@@ -1,10 +1,10 @@
 package framework;
 
-import framework.outputs.pxu.EventPublisher;
-import framework.outputs.pxu.PxuNetwork;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import com.google.common.eventbus.EventBus;
+import framework.adapter.output.pxu.EventPublisher;
+import framework.adapter.output.pxu.PxuNetwork;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

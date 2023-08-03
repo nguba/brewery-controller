@@ -1,4 +1,4 @@
-package framework.outputs.pxu.event;
+package framework.adapter.output.pxu.event;
 
 import java.util.StringJoiner;
 

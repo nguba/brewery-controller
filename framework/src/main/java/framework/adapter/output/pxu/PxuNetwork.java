@@ -1,12 +1,12 @@
-package framework.outputs.pxu;
+package framework.adapter.output.pxu;
 
-import framework.outputs.pxu.event.MetricsFetched;
-import framework.outputs.pxu.event.ProfileFetched;
-import framework.outputs.pxu.event.PxuEvent;
-import framework.outputs.pxu.event.PxuRequestFailed;
 import com.ghgande.j2mod.modbus.facade.AbstractModbusMaster;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import framework.adapter.output.pxu.event.MetricsFetched;
+import framework.adapter.output.pxu.event.ProfileFetched;
+import framework.adapter.output.pxu.event.PxuEvent;
+import framework.adapter.output.pxu.event.PxuRequestFailed;
 import org.slf4j.Logger;
 
 import java.time.Duration;

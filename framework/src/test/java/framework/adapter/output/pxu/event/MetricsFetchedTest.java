@@ -1,8 +1,8 @@
-package framework.outputs.pxu.event;
+package framework.adapter.output.pxu.event;
 
-import framework.outputs.pxu.PxuMetrics;
-import framework.outputs.pxu.PxuTestConstants;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import framework.adapter.output.pxu.PxuMetrics;
+import framework.adapter.output.pxu.PxuTestConstants;
 
 class MetricsFetchedTest extends PxuEventFixture<MetricsFetched, PxuMetrics> {
 

@@ -1,4 +1,4 @@
-package framework.outputs.pxu;
+package framework.adapter.output.pxu;
 
 import com.ghgande.j2mod.modbus.procimg.Register;
 
