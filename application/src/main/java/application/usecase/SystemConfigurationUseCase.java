@@ -14,4 +14,12 @@ public interface SystemConfigurationUseCase {
      * @param vessel
      */
     void registerVessel(Vessel vessel);
+
+    /**
+     * Remove a vessel from the system.  This is necessary when the configuration of the system changes, such as a
+     * different temperature controller is used for a vessel.
+     *
+     * @param vessel
+     */
+    void removeVessel(Vessel vessel);
 }

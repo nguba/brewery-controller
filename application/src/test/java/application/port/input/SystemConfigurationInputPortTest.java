@@ -1,7 +1,7 @@
 package application.port.input;
 
-import application.port.output.TemperatureControllerOutputPort;
-import application.port.output.TemperatureControllerOutputPortAdapterInMemory;
+import application.port.output.DataLoggerOutputPort;
+import application.port.output.DataLoggerOutputPortAdapterInMemory;
 import domain.TemperatureControllerId;
 import domain.Vessel;
 import domain.VesselId;
@@ -16,7 +16,7 @@ class SystemConfigurationInputPortTest {
 
     TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(6);
 
-    TemperatureControllerOutputPort temperatureControllerOutputPort = new TemperatureControllerOutputPortAdapterInMemory();
+    DataLoggerOutputPort dataLoggerOutputPort = new DataLoggerOutputPortAdapterInMemory();
 
     SystemConfigurationInputPort inputPort;
 
@@ -24,7 +24,7 @@ class SystemConfigurationInputPortTest {
 
     @BeforeEach
     void setUp() {
-        inputPort = SystemConfigurationInputPort.with(temperatureControllerOutputPort);
+        inputPort = SystemConfigurationInputPort.with(dataLoggerOutputPort);
         vessel = Vessel.with(vesselId, temperatureControllerId);
     }
 
@@ -47,21 +47,25 @@ class SystemConfigurationInputPortTest {
     @Test
     @DisplayName("Successfully adding a controller allows it to be retrieved by id")
     void addControllerIsPresent() {
-        assertThat(temperatureControllerOutputPort.findTemperatureControllerId(vesselId)).isEmpty();
+        assertThat(dataLoggerOutputPort.findTemperatureControllerId(vesselId)).isEmpty();
 
         addTemperatureController();
 
-        assertThat(temperatureControllerOutputPort.findTemperatureControllerId(vesselId)).contains(temperatureControllerId);
+        verifyTemperatureControllerIsRegistered();
+    }
+
+    private void verifyTemperatureControllerIsRegistered() {
+        assertThat(dataLoggerOutputPort.findTemperatureControllerId(vesselId)).contains(temperatureControllerId);
     }
 
     @Test
     @DisplayName("Successfully adding a vessel allows the temperature controller id to be retrieved by vessel id")
     void addVesselWithControllerId() {
-        assertThat(temperatureControllerOutputPort.findTemperatureControllerId(vesselId)).isEmpty();
+        assertThat(dataLoggerOutputPort.findTemperatureControllerId(vesselId)).isEmpty();
 
         addTemperatureController();
 
-        assertThat(temperatureControllerOutputPort.findTemperatureControllerId(vesselId)).contains(temperatureControllerId);
+        verifyTemperatureControllerIsRegistered();
     }
 
     private void addTemperatureController() {
@@ -72,9 +76,27 @@ class SystemConfigurationInputPortTest {
     @DisplayName("Adding a vessel with a vessel id that already exists will throw an exception")
     void addVesselAlreadyRegistered() {
         addTemperatureController();
-
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> addTemperatureController())
                 .withMessage("Vessel with VesselId[value=test] already exists, remove the vessel first");
+    }
+
+    @Test
+    @DisplayName("Verify that a controller cannot be removed with a null vessel")
+    void removeControllerWithNull() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> inputPort.removeVessel(null))
+                .withMessage("Vessel cannot be null");
+    }
+
+    @Test
+    @DisplayName("Remove succeeds silently even when the temperature controller id does not exist")
+    void removeControllerWithNullTemperatureController() {
+        addTemperatureController();
+        assertThat(dataLoggerOutputPort.findTemperatureControllerId(vesselId)).isPresent();
+
+        inputPort.removeVessel(Vessel.with(vesselId, null));
+
+        assertThat(dataLoggerOutputPort.findTemperatureControllerId(vesselId)).isEmpty();
     }
 }

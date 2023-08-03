@@ -1,6 +1,6 @@
 package framework.adapter.output.influxdb;
 
-import application.port.output.TemperatureControllerOutputPort;
+import application.port.output.DataLoggerOutputPort;
 import com.influxdb.client.InfluxDBClient;
 import domain.TemperatureControllerId;
 import domain.VesselId;
@@ -12,9 +12,9 @@ import org.testcontainers.containers.InfluxDBContainer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @InfluxDbFixture
-class TemperatureControllerOutputPortInfluxDbTest {
+class DataLoggerOutputPortInfluxDbTest {
 
-    static TemperatureControllerOutputPort port;
+    static DataLoggerOutputPort port;
 
     private final InfluxDBClient client;
 
@@ -22,9 +22,9 @@ class TemperatureControllerOutputPortInfluxDbTest {
 
     TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(1);
 
-    public TemperatureControllerOutputPortInfluxDbTest(InfluxDBClient client, InfluxDBContainer<?> container) {
+    public DataLoggerOutputPortInfluxDbTest(InfluxDBClient client, InfluxDBContainer<?> container) {
         this.client = client;
-        port = TemperatureControllerOutputPortInfluxDb.with(client);
+        port = DataLoggerOutputPortInfluxDb.with(client);
     }
 
     @Test

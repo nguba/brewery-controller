@@ -1,6 +1,6 @@
 package framework.adapter.output.influxdb;
 
-import application.port.output.TemperatureControllerOutputPort;
+import application.port.output.DataLoggerOutputPort;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.domain.WritePrecision;
 import domain.Schedule;
@@ -10,16 +10,16 @@ import domain.VesselId;
 import java.util.List;
 import java.util.Optional;
 
-public class TemperatureControllerOutputPortInfluxDb implements TemperatureControllerOutputPort {
+public class DataLoggerOutputPortInfluxDb implements DataLoggerOutputPort {
 
     private final InfluxDBClient client;
 
-    private TemperatureControllerOutputPortInfluxDb(InfluxDBClient client) {
+    private DataLoggerOutputPortInfluxDb(InfluxDBClient client) {
         this.client = client;
     }
 
-    public static TemperatureControllerOutputPort with(InfluxDBClient client) {
-        return new TemperatureControllerOutputPortInfluxDb(client);
+    public static DataLoggerOutputPort with(InfluxDBClient client) {
+        return new DataLoggerOutputPortInfluxDb(client);
     }
 
 
@@ -31,6 +31,10 @@ public class TemperatureControllerOutputPortInfluxDb implements TemperatureContr
     public void registerTemperatureController(VesselId id, TemperatureControllerId temperatureControllerId) {
         final TemperatureControllerMeasurement measurement = TemperatureControllerMeasurement.with(id, temperatureControllerId);
         client.getWriteApiBlocking().writeMeasurement("test-bucket", "test-org", WritePrecision.NS, measurement);
+    }
+
+    @Override
+    public void removeTemperatureController(VesselId id) {
     }
 
     @Override
