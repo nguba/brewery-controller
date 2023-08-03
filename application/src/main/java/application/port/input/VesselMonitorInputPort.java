@@ -52,9 +52,10 @@ public class VesselMonitorInputPort implements VesselMonitorUseCase {
         if (vesselId == null) {
             throw new IllegalArgumentException("Vessel id cannot be null");
         }
-        if (monitoredVessels.containsKey(vesselId)) {
+        if (isActive(vesselId)) {
             ScheduledFuture<?> scheduledFuture = monitoredVessels.remove(vesselId);
-            scheduledFuture.cancel(true);
+            if (scheduledFuture != null)
+                scheduledFuture.cancel(true);
         }
     }
 
