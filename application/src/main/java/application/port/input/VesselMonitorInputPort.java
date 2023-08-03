@@ -44,6 +44,7 @@ public class VesselMonitorInputPort implements VesselMonitorUseCase {
         ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(() -> {
             temperatureControllerOutputPort.requestMetrics(temperatureControllerId);
         }, 0, interval.toSeconds(), TimeUnit.SECONDS);
+
         monitoredVessels.put(vesselId, scheduledFuture);
     }
 

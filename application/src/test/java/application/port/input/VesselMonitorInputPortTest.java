@@ -23,10 +23,12 @@ class VesselMonitorInputPortTest {
 
     CountDownLatch latch = new CountDownLatch(1);
 
+    TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(6);
+
     VesselMonitorUseCase vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPort() {
         @Override
         public Optional<TemperatureControllerId> findTemperatureControllerId(VesselId vesselId) {
-            return Optional.of(TemperatureControllerId.of(6));
+            return Optional.of(temperatureControllerId);
         }
 
         @Override
