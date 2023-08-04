@@ -1,5 +1,6 @@
 package framework.adapter.output.pxu;
 
+import application.port.output.EventPublisherOutputPort;
 import com.ghgande.j2mod.modbus.facade.AbstractModbusMaster;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.Register;
@@ -20,7 +21,7 @@ public class PxuNetwork {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PxuNetwork.class);
 
-    public PxuNetwork(ModbusSerialMaster master, Duration pollRate, EventPublisher eventPublisher) {
+    public PxuNetwork(ModbusSerialMaster master, Duration pollRate, EventPublisherOutputPort eventPublisher) {
         this.master = master;
         LOGGER.info("Detected commPorts: {}", master.getConnection().getCommPorts());
         requestQueue = new RequestQueue(pollRate.toMillis(), eventPublisher);
@@ -56,10 +57,10 @@ public class PxuNetwork {
         private final ScheduledExecutorService consumer = Executors.newSingleThreadScheduledExecutor();
         private Optional<ScheduledFuture<?>> scheduledFuture = Optional.empty();
         private final long delay;
-        private final EventPublisher eventPublisher;
+        private final EventPublisherOutputPort eventPublisher;
         private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RequestQueue.class);
 
-        private RequestQueue(long delay, EventPublisher eventPublisher) {
+        private RequestQueue(long delay, EventPublisherOutputPort eventPublisher) {
             this.delay = delay;
             this.eventPublisher = eventPublisher;
         }

@@ -1,9 +1,9 @@
 package framework;
 
+import application.port.output.EventPublisherOutputPort;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import com.google.common.eventbus.EventBus;
-import framework.adapter.output.pxu.EventPublisher;
 import framework.adapter.output.pxu.PxuNetwork;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,12 +23,12 @@ public class BreweryServer {
     }
 
     @Bean
-    PxuNetwork pxuNetwork(ModbusSerialMaster master, EventPublisher publisher) {
+    PxuNetwork pxuNetwork(ModbusSerialMaster master, EventPublisherOutputPort publisher) {
         return new PxuNetwork(master, Duration.ofSeconds(1), publisher);
     }
 
     @Bean
-    EventPublisher eventPublisher(EventBus eventBus) {
+    EventPublisherOutputPort eventPublisher(EventBus eventBus) {
         return eventBus::post;
     }
 

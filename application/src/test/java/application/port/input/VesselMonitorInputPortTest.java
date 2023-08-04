@@ -1,5 +1,6 @@
 package application.port.input;
 
+import application.port.output.EventPublisherOutputPort;
 import application.port.output.TemperatureControllerOutputPort;
 import application.usecase.VesselMonitorUseCase;
 import domain.Interval;
@@ -26,16 +27,22 @@ class VesselMonitorInputPortTest {
     TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(6);
 
     VesselMonitorUseCase vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPort() {
+        // TODO move into an adapter to reduce noise
         @Override
         public Optional<TemperatureControllerId> findTemperatureControllerId(VesselId vesselId) {
             return Optional.of(temperatureControllerId);
         }
 
         @Override
-        public void requestMetrics(TemperatureControllerId temperatureControllerId) {
+        public void requestMetrics(TemperatureControllerId temperatureControllerId, EventPublisherOutputPort eventPublisherOutputPort) {
             latch.countDown();
         }
-    }, Executors.newScheduledThreadPool(1));
+
+    }, Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
+        @Override
+        public void publish(Object event) {
+        }
+    });
 
     @Test
     @DisplayName("Verify that monitoring a vessel with a null vessel id throws an exception")
@@ -91,9 +98,14 @@ class VesselMonitorInputPortTest {
             }
 
             @Override
-            public void requestMetrics(TemperatureControllerId temperatureControllerId) {
+            public void requestMetrics(TemperatureControllerId temperatureControllerId, EventPublisherOutputPort eventPublisherOutputPort) {
             }
-        }, Executors.newScheduledThreadPool(1));
+
+        }, Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
+            @Override
+            public void publish(Object event) {
+            }
+        });
 
         assertThatIllegalStateException()
                 .isThrownBy(() -> vesselMonitor.startMonitoring(vesselId, interval))
