@@ -26,21 +26,11 @@ class VesselMonitorInputPortTest {
 
     TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(6);
 
-    VesselMonitorUseCase vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPort() {
-        // TODO move into an adapter to reduce noise
-        @Override
-        public Optional<TemperatureControllerId> findTemperatureControllerId(VesselId vesselId) {
-            return Optional.of(temperatureControllerId);
-        }
-
-        @Override
-        public void requestMetrics(TemperatureControllerId temperatureControllerId, EventPublisherOutputPort eventPublisherOutputPort) {
-            latch.countDown();
-        }
-
-    }, Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
+    VesselMonitorUseCase vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPortTestDouble(), Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
         @Override
         public void publish(Object event) {
+            // we are publishing the events via this port.  This is necessary due to the asynchronous processing of the
+            // temperature controller metrics via the scheduled executor service.
         }
     });
 
@@ -91,14 +81,10 @@ class VesselMonitorInputPortTest {
     @Test
     @DisplayName("Starting monitoring of a vessel throws an exception if the temperature controller Id cannot be found")
     void startMonitoringTemperatureControllerIdNotFound() {
-        vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPort() {
+        vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPortTestDouble() {
             @Override
             public Optional<TemperatureControllerId> findTemperatureControllerId(VesselId vesselId) {
                 return Optional.empty();
-            }
-
-            @Override
-            public void requestMetrics(TemperatureControllerId temperatureControllerId, EventPublisherOutputPort eventPublisherOutputPort) {
             }
 
         }, Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
@@ -138,5 +124,17 @@ class VesselMonitorInputPortTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> vesselMonitor.stopMonitoring(null))
                 .withMessage("Vessel id cannot be null");
+    }
+
+    private class TemperatureControllerOutputPortTestDouble implements TemperatureControllerOutputPort {
+        @Override
+        public Optional<TemperatureControllerId> findTemperatureControllerId(VesselId vesselId) {
+            return Optional.of(temperatureControllerId);
+        }
+
+        @Override
+        public void requestMetrics(TemperatureControllerId temperatureControllerId, EventPublisherOutputPort eventPublisherOutputPort) {
+            latch.countDown();
+        }
     }
 }
