@@ -1,6 +1,9 @@
 package application.usecase;
 
 import domain.Vessel;
+import domain.VesselId;
+
+import java.util.Optional;
 
 /**
  * System configurations are tasks that happen occasionally, such as adding a new vessel to the system.
@@ -22,4 +25,12 @@ public interface SystemConfigurationUseCase {
      * @param vessel
      */
     void removeVessel(Vessel vessel);
+
+    /**
+     * Locate a vessel in the system.  This is necessary when the configuration of the system changes, such as a
+     * different temperature controller is used for a vessel.
+     *
+     * @param id
+     */
+    Optional<Vessel> locateVessel(VesselId id);
 }

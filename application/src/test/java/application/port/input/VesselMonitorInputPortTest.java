@@ -1,16 +1,18 @@
 package application.port.input;
 
+import application.port.output.ConfigurationPersistenceLayerOutputPortAdapterInMemory;
 import application.port.output.EventPublisherOutputPort;
 import application.port.output.TemperatureControllerOutputPort;
 import application.usecase.VesselMonitorUseCase;
 import domain.Interval;
 import domain.TemperatureControllerId;
+import domain.Vessel;
 import domain.VesselId;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,13 +28,20 @@ class VesselMonitorInputPortTest {
 
     TemperatureControllerId temperatureControllerId = TemperatureControllerId.of(6);
 
+    SystemConfigurationInputPort systemConfiguration = SystemConfigurationInputPort.with(new ConfigurationPersistenceLayerOutputPortAdapterInMemory());
     VesselMonitorUseCase vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPortTestDouble(), Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
         @Override
         public void publish(Object event) {
             // we are publishing the events via this port.  This is necessary due to the asynchronous processing of the
             // temperature controller metrics via the scheduled executor service.
         }
-    });
+    }, systemConfiguration);
+
+    @BeforeEach
+    void setUp() {
+        Vessel vessel = Vessel.with(vesselId, temperatureControllerId);
+        systemConfiguration.registerVessel(vessel);
+    }
 
     @Test
     @DisplayName("Verify that monitoring a vessel with a null vessel id throws an exception")
@@ -81,17 +90,12 @@ class VesselMonitorInputPortTest {
     @Test
     @DisplayName("Starting monitoring of a vessel throws an exception if the temperature controller Id cannot be found")
     void startMonitoringTemperatureControllerIdNotFound() {
-        vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPortTestDouble() {
-            @Override
-            public Optional<TemperatureControllerId> findTemperatureControllerId(VesselId vesselId) {
-                return Optional.empty();
-            }
-
-        }, Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
-            @Override
-            public void publish(Object event) {
-            }
-        });
+        vesselMonitor = VesselMonitorInputPort.with(new TemperatureControllerOutputPortTestDouble(),
+                Executors.newScheduledThreadPool(1), new EventPublisherOutputPort() {
+                    @Override
+                    public void publish(Object event) {
+                    }
+                }, systemConfiguration);
 
         assertThatIllegalStateException()
                 .isThrownBy(() -> vesselMonitor.startMonitoring(vesselId, interval))
@@ -127,10 +131,6 @@ class VesselMonitorInputPortTest {
     }
 
     private class TemperatureControllerOutputPortTestDouble implements TemperatureControllerOutputPort {
-        @Override
-        public Optional<TemperatureControllerId> findTemperatureControllerId(VesselId vesselId) {
-            return Optional.of(temperatureControllerId);
-        }
 
         @Override
         public void requestMetrics(TemperatureControllerId temperatureControllerId, EventPublisherOutputPort eventPublisherOutputPort) {

@@ -5,6 +5,7 @@ import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import com.google.common.eventbus.EventBus;
 import framework.adapter.output.pxu.PxuNetwork;
+import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import java.time.Duration;
 
 @SpringBootApplication
 public class BreweryServer {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BreweryServer.class);
 
     public static void main(String[] args) {
         try {
@@ -50,6 +52,8 @@ public class BreweryServer {
         parameters.setBaudRate(9600);
         parameters.setParity("None");
         parameters.setDatabits(8);
+        parameters.setRs485Mode(true);
+        LOGGER.info("Configured {}", parameters);
         return parameters;
     }
 }

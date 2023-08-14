@@ -4,32 +4,38 @@ import application.port.output.EventPublisherOutputPort;
 import application.port.output.TemperatureControllerOutputPort;
 import application.usecase.VesselMonitorUseCase;
 import domain.Interval;
-import domain.TemperatureControllerId;
+import domain.Vessel;
 import domain.VesselId;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class VesselMonitorInputPort implements VesselMonitorUseCase {
-    private final TemperatureControllerOutputPort temperatureControllerOutputPort;
+    private final TemperatureControllerOutputPort temperatureController;
     private final ScheduledExecutorService scheduledExecutorService;
-    private final EventPublisherOutputPort eventPublisherOutputPort;
+    private final EventPublisherOutputPort eventPublisher;
+    private final SystemConfigurationInputPort systemConfiguration;
     private final ConcurrentMap<VesselId, ScheduledFuture<?>> monitoredVessels = new java.util.concurrent.ConcurrentHashMap<>();
 
-    public VesselMonitorInputPort(TemperatureControllerOutputPort temperatureControllerOutputPort,
+    public VesselMonitorInputPort(TemperatureControllerOutputPort temperatureController,
                                   ScheduledExecutorService scheduledExecutorService,
-                                  EventPublisherOutputPort eventPublisherOutputPort) {
-        this.temperatureControllerOutputPort = temperatureControllerOutputPort;
+                                  EventPublisherOutputPort eventPublisher,
+                                  SystemConfigurationInputPort systemConfiguration) {
+        this.temperatureController = temperatureController;
         this.scheduledExecutorService = scheduledExecutorService;
-        this.eventPublisherOutputPort = eventPublisherOutputPort;
+        this.eventPublisher = eventPublisher;
+        this.systemConfiguration = systemConfiguration;
     }
 
-    public static VesselMonitorInputPort with(TemperatureControllerOutputPort temperatureControllerOutputPort,
+    public static VesselMonitorInputPort with(TemperatureControllerOutputPort temperatureController,
                                               ScheduledExecutorService scheduledExecutorService,
-                                              EventPublisherOutputPort eventPublisherOutputPort) {
-        return new VesselMonitorInputPort(temperatureControllerOutputPort, scheduledExecutorService, eventPublisherOutputPort);
+                                              EventPublisherOutputPort eventPublisher,
+                                              SystemConfigurationInputPort systemConfiguration) {
+        return new VesselMonitorInputPort(temperatureController, scheduledExecutorService, eventPublisher,
+                systemConfiguration);
     }
 
     @Override
@@ -43,11 +49,11 @@ public class VesselMonitorInputPort implements VesselMonitorUseCase {
         if (monitoredVessels.containsKey(vesselId)) {
             throw new IllegalArgumentException("Vessel is already being monitored");
         }
-        TemperatureControllerId temperatureControllerId = temperatureControllerOutputPort.findTemperatureControllerId(vesselId)
-                .orElseThrow(() -> new IllegalStateException("No temperature controller found for " + vesselId));
+        Optional<Vessel> vessel = systemConfiguration.locateVessel(vesselId);
+        vessel.orElseThrow(() -> new IllegalStateException("No temperature controller found for " + vesselId));
 
         ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(() -> {
-            temperatureControllerOutputPort.requestMetrics(temperatureControllerId, eventPublisherOutputPort);
+            temperatureController.requestMetrics(vessel.get().temperatureControllerId(), eventPublisher);
         }, 0, interval.toSeconds(), TimeUnit.SECONDS);
 
         monitoredVessels.put(vesselId, scheduledFuture);

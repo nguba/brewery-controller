@@ -1,19 +1,23 @@
 package application.port.input;
 
-import application.port.output.DataLoggerOutputPort;
+import application.port.output.ConfigurationPersistenceLayerOutputPort;
 import application.usecase.SystemConfigurationUseCase;
 import domain.Vessel;
+import domain.VesselId;
+
+import java.util.Optional;
 
 public class SystemConfigurationInputPort implements SystemConfigurationUseCase {
 
-    private final DataLoggerOutputPort dataLoggerOutputPort;
+    private final ConfigurationPersistenceLayerOutputPort outputPort;
 
-    private SystemConfigurationInputPort(DataLoggerOutputPort dataLoggerOutputPort) {
-        this.dataLoggerOutputPort = dataLoggerOutputPort;
+    private SystemConfigurationInputPort(ConfigurationPersistenceLayerOutputPort outputPort) {
+
+        this.outputPort = outputPort;
     }
 
-    public static SystemConfigurationInputPort with(DataLoggerOutputPort dataLoggerOutputPort) {
-        return new SystemConfigurationInputPort(dataLoggerOutputPort);
+    public static SystemConfigurationInputPort with(ConfigurationPersistenceLayerOutputPort outputPort) {
+        return new SystemConfigurationInputPort(outputPort);
     }
 
     @Override
@@ -24,12 +28,12 @@ public class SystemConfigurationInputPort implements SystemConfigurationUseCase 
         if (vessel.temperatureControllerId() == null) {
             throw new IllegalArgumentException("Vessel cannot have a null temperature controller");
         }
-        dataLoggerOutputPort.findTemperatureControllerId(vessel.id()).ifPresentOrElse(
+        outputPort.findTemperatureControllerId(vessel.id()).ifPresentOrElse(
                 existingVessel -> {
                     throw new IllegalArgumentException("Vessel with " + vessel.id() + " already exists, remove the vessel first");
                 },
                 () -> {
-                    dataLoggerOutputPort.registerTemperatureController(vessel.id(), vessel.temperatureControllerId());
+                    outputPort.registerTemperatureController(vessel.id(), vessel.temperatureControllerId());
                 }
         );
     }
@@ -38,13 +42,18 @@ public class SystemConfigurationInputPort implements SystemConfigurationUseCase 
     public void removeVessel(Vessel vessel) {
         if (vessel == null)
             throw new IllegalArgumentException("Vessel cannot be null");
-        dataLoggerOutputPort.findTemperatureControllerId(vessel.id()).ifPresentOrElse(
+        outputPort.findTemperatureControllerId(vessel.id()).ifPresentOrElse(
                 existingVessel -> {
-                    dataLoggerOutputPort.removeTemperatureController(vessel.id());
+                    outputPort.removeTemperatureController(vessel.id());
                 },
                 () -> {
                     throw new IllegalArgumentException("Vessel with " + vessel.id() + " does not exist");
                 }
         );
+    }
+
+    @Override
+    public Optional<Vessel> locateVessel(VesselId id) {
+        return Optional.empty();
     }
 }
